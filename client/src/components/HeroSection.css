@@ -36,3 +36,21 @@
     font-style: italic;
     margin-bottom: 30px;
 }
+
+@media (max-width: 700px) {
+    .hero-section {
+        width: 90%;
+    }
+}
+
+@media (max-width: 440px) {
+    .lside-hero-sec {
+        width: 100%;
+        align-items: center;
+        text-align: center;
+    }
+
+    .rside-hero-sec {
+        display: none;
+    }
+}
