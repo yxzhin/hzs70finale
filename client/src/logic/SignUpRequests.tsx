@@ -28,7 +28,7 @@ function SignUpRequest() {
             return;
         }
 
-        fetch("http://localhost:5000/api/user/register", {
+        fetch("http://localhost:5000/user/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -43,7 +43,7 @@ function SignUpRequest() {
                 console.log("Server response:", result);
                 localStorage.setItem('jwt', result['token']);
                 localStorage.setItem('userid', result['user']['id']);
-                navigate("/dashboard", { replace: true });
+                navigate("/success", { replace: true });
             })
             .catch(err => {
                 console.error("Registration error:", err);

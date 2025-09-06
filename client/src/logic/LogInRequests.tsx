@@ -22,7 +22,7 @@ function LogInRequest() {
             return;
         }
     
-            fetch("http://localhost:5000/api/user/login", {
+            fetch("http://localhost:5000/user/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -38,7 +38,7 @@ function LogInRequest() {
                     if (result?.token && result?.user?.id) {
                         localStorage.setItem('jwt', result['token']);
                         localStorage.setItem('userid', result['user']['id']);
-                        navigate(`/dashboard`, { replace: true });
+                        navigate(`/success`, { replace: true });
                     } else {
                         navigate("/sign_in?error=invalid_response", { replace: true });
                     }

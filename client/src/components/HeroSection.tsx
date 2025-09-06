@@ -15,7 +15,7 @@ function HeroSection(data: HeroSectionProps) {
             </div>
 
             <div className="rside-hero-sec">
-                <img src={`/public/${data.imageSrc}`} className='hero-sec-img' />
+                <img src={`/${data.imageSrc}`} className='hero-sec-img' />
             </div>
         </div>
     );
