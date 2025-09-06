@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from server.db.db_session import SqlAlchemyBase
 
@@ -8,13 +8,17 @@ class Group(SqlAlchemyBase):
 
     id = Column(Integer, primary_key=True)
     name = Column(String, unique=True, nullable=False)
+    owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
-    users = relationship("User", secondary="user_groups", back_populates="groups")
+    user_groups = relationship("UserGroup", back_populates="group", cascade="all, delete-orphan")
+    users = relationship("User", secondary="user_groups", back_populates="groups", overlaps="user_groups")
+    owner = relationship("User", back_populates="owned_groups")
 
     def to_dict(self, users_req=False):
         output = {
             "id": self.id,
-            "name": self.name
+            "name": self.name,
+            "owner_id": self.owner_id,
         }
 
         if users_req:
