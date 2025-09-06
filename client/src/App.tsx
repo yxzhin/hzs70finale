@@ -12,6 +12,7 @@ import SignUpPage from './pages/SignUp';
 
 // Logic
 import SignUpRequest from './logic/SignUpRequests';
+import LogInRequest from './logic/LogInRequests';
 
 function App() {
     return (
@@ -23,6 +24,7 @@ function App() {
                     <Route path="/" element={<Hero />} />
                     <Route path="/signup" element={<SignUpPage />} />
                     <Route path="/sign_up_submit" element={<SignUpRequest />} />
+                    <Route path="/log_in_submit" element={<LogInRequest />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </BrowserRouter>
