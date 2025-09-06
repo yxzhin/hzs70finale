@@ -16,7 +16,7 @@
     padding: 2rem;
     border-radius: 10px;
     width: 90%;
-    max-width: 1000px;
+    max-width: 800px;
     color: var(--white);
 }
 
@@ -84,7 +84,8 @@
     opacity: 0.5;
 }
 
-.check-name {
+.overlay-header {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 0.5rem;
 }

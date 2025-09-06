@@ -1,4 +1,4 @@
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import "./SplitOverlay.css";
 
 interface Person {
@@ -140,48 +140,50 @@ function SplitOverlay({ isOpen, onClose, onApply }: SplitOverlayProps) {
             <div className="overlay-content">
                 <h2>Split Expense</h2>
 
-                <div className="input-group">
-                    <input
-                        type="text"
-                        placeholder="Activity (e.g., Pizza)"
-                        value={activity}
-                        onChange={(e) => setActivity(e.target.value)}
-                        className="input"
-                    />
-                    <input
-                        type="number"
-                        placeholder="Total Amount"
-                        value={totalAmount}
-                        onChange={(e) => setTotalAmount(e.target.value)}
-                        className="input"
-                    />
-                </div>
-                <div className="checkbox-group">
-                    <label className="checkbox-label">
+                <div className="overlay-header">
+                    <div className="input-group">
                         <input
-                            type="checkbox"
-                            checked={divideEqually}
-                            onChange={(e) => {
-                                setDivideEqually(e.target.checked);
-                                if (percentage)
-                                    setPercentage(!e.target.checked);
-                            }}
+                            type="text"
+                            placeholder="Activity (e.g., Pizza)"
+                            value={activity}
+                            onChange={(e) => setActivity(e.target.value)}
+                            className="input"
                         />
-                        Divide Equally
-                    </label>
-
-                    <label className="checkbox-label">
                         <input
-                            type="checkbox"
-                            checked={percentage}
-                            onChange={(e) => {
-                                setPercentage(e.target.checked);
-                                if (divideEqually)
-                                    setDivideEqually(!e.target.checked);
-                            }}
+                            type="number"
+                            placeholder="Total Amount"
+                            value={totalAmount}
+                            onChange={(e) => setTotalAmount(e.target.value)}
+                            className="input"
+                            min="0"
                         />
-                        Percentage
-                    </label>
+                    </div>
+                    <div className="checkbox-group">
+                        <label className="checkbox-label">
+                            <input
+                                type="checkbox"
+                                checked={divideEqually}
+                                onChange={(e) => {
+                                    setDivideEqually(e.target.checked);
+                                    if (percentage)
+                                        setPercentage(!e.target.checked);
+                                }}
+                            />
+                            Divide Equally
+                        </label>
+                        <label className="checkbox-label">
+                            <input
+                                type="checkbox"
+                                checked={percentage}
+                                onChange={(e) => {
+                                    setPercentage(e.target.checked);
+                                    if (divideEqually)
+                                        setDivideEqually(!e.target.checked);
+                                }}
+                            />
+                            Percentage
+                        </label>
+                    </div>
                 </div>
                 <table className="split-table">
                     <thead>
@@ -190,7 +192,7 @@ function SplitOverlay({ isOpen, onClose, onApply }: SplitOverlayProps) {
                             <th>Paid</th>
                             <th>Should Pay</th>
                             <th>%</th>
-                            <th>Overpaid/Not paid</th>
+                            <th>Overpaid/Not enough</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -229,6 +231,7 @@ function SplitOverlay({ isOpen, onClose, onApply }: SplitOverlayProps) {
                                             }}
                                             disabled={!person.isParticipating}
                                             className="input"
+                                            min="0"
                                         />
                                     </td>
                                     <td>
@@ -260,6 +263,7 @@ function SplitOverlay({ isOpen, onClose, onApply }: SplitOverlayProps) {
                                             }
                                             className="input"
                                             max={parseFloat(totalAmount) || 0}
+                                            min="0"
                                         />
                                     </td>
                                     <td>
@@ -290,16 +294,17 @@ function SplitOverlay({ isOpen, onClose, onApply }: SplitOverlayProps) {
                                             }}
                                             disabled={!percentage || !person.isParticipating}
                                             className="input"
+                                            min="0"
                                             max={100}
                                         />
                                     </td>
                                     <td>
                                         <p>
                                             {person.isParticipating
-                                                ? `${((person.paid ? parseFloat(person.paid) : 0) - parseFloat(person.shouldPay)).toFixed(2)} ${(person.paid ? parseFloat(person.paid) : 0) - parseFloat(person.shouldPay) > 0
+                                                ? `${((person.paid ? parseFloat(person.paid) : 0) - (person.shouldPay ? parseFloat(person.shouldPay) : 0)).toFixed(2)} ${(person.paid ? parseFloat(person.paid) : 0) - parseFloat(person.shouldPay) > 0
                                                     ? "(Overpaid)"
-                                                    : (person.paid ? parseFloat(person.paid) : 0) - parseFloat(person.shouldPay) < 0? "(Not paid enough)" : "Ok"
-                                                }`
+                                                    : (person.paid ? parseFloat(person.paid) : 0) - parseFloat(person.shouldPay) < 0 ? "(Not paid enough)" : "Ok"
+                                            }`
                                                 : ""}
                                         </p>
                                     </td>
