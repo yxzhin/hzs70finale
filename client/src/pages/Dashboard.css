@@ -40,7 +40,7 @@
     align-items: center;
     flex-direction: column;
     margin-top: 50px;
-    height:100vh;
+    min-height: 100vh;
 }
 
 .dashboard-content {
@@ -61,4 +61,76 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+}
+
+@media (max-width: 1150px) {
+    .dashboard-content {
+        width: 90%;
+    }
+}
+
+@media (max-width: 850px) {
+    .table-section-split {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 650px) {
+    .dashboard-header-left h1 {
+        font-size: 20pt;
+    }
+
+    .dashboard-header-right button {
+        font-size: 14pt;
+    }
+}
+
+@media (min-width: 431px) {
+    .small-screen-welcome {
+        display: none;
+    }
+}
+
+@media (max-width: 430px) {
+    .debt-item {
+        padding: 16px 0px;
+    }
+
+    .debt-person {
+        font-size: 10pt;
+    }
+
+    .dashboard-content {
+        margin-top: 0;
+    }
+
+    .small-screen-welcome {
+        color: var(--white);
+        font-size: 24pt;
+        margin-bottom: 20px;
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .dashboard-title {
+        display: none;
+    }
+
+    .dashboard-header-left h1 {
+        font-size: 16pt;
+    }
+
+    .dashboard-header button {
+        font-size: 12pt;
+    }
+
+    .add-spending-section .dashboard-title {
+        display: block;
+        font-size: 16pt;
+    }
+
+    .add-spending-section {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }

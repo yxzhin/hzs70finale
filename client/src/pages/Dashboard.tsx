@@ -11,13 +11,14 @@ function Dashboard() {
   return (
     <div className="dashboard">
       <div className="dashboard-content">
+        <h1 className='small-screen-welcome'>Welcome,<br /><span className="red-text">User</span></h1>
         <div className="dashboard-header">
           <div className="dashboard-header-left">
             <h1 className="dashboard-title">
-              Welcome <span className="red-text">User</span>,<br />
+              Welcom, <span className="red-text">User</span>
             </h1>
             <div className="add-spending-section">
-              <h1 className="dashboard-title">Add a spending:</h1>
+              <h1 className="dashboard-title">Add a spending</h1>
               <button className="primary-btn" onClick={() => setIsOverlayOpen(true)}>+</button>
             </div>
           </div>
@@ -26,7 +27,7 @@ function Dashboard() {
             <button className="primary-btn">Add Friend</button>
           </div>
         </div>
-        <div className="table-section">
+        <div className="table-section table-section-split">
           <div className="they-owe">
             <h2 className="table-title">They Owe You {theyOweValue}</h2>
             <div className="debt-list">
