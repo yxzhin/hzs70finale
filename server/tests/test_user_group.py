@@ -24,22 +24,20 @@ def setup_user_and_groups(db_session, get_auth_token):
     return token, user_id, [group1, group2, group3]
 
 
-# --- Тесты для GET /user_groups ---
-def test_get_user_groups_success(test_client, setup_user_and_groups):
+# --- Тесты для GET /user_groups/ ---
+def test_get_user_groups_success(test_client, setup_user_and_groups, db_session):
     """
     Тест на успешное получение списка групп, в которых состоит пользователь.
     """
     token, user_id, groups = setup_user_and_groups
-    db_sess = create_session()
-    user = db_sess.get(User, user_id)
+    user = db_session.get(User, user_id)
     # Добавляем пользователя в некоторые группы
     user.groups.append(groups[0])
     user.groups.append(groups[1])
-    db_sess.commit()
-    db_sess.close()
+    db_session.commit()
 
     response = test_client.get(
-        f"/user_groups",
+        f"/user_groups/",
         headers={"Authorization": f"Bearer {token}"}
     )
 
@@ -59,7 +57,7 @@ def test_get_user_groups_not_found(test_client, get_auth_token):
     non_existent_user_id = 999
 
     response = test_client.get(
-        f"/user_groups",
+        f"/user_groups/",
         headers={"Authorization": f"Bearer {token}"},
         data=json.dumps({"user_id": non_existent_user_id}),
         content_type="application/json"
@@ -73,7 +71,7 @@ def test_get_user_groups_not_found(test_client, get_auth_token):
     # который гарантирует существование пользователя.
 
 
-# --- Тесты для POST /user_groups ---
+# --- Тесты для POST /user_groups/ ---
 def test_add_user_to_groups_success(test_client, setup_user_and_groups):
     """
     Тест на успешное добавление пользователя в группы.
@@ -82,7 +80,7 @@ def test_add_user_to_groups_success(test_client, setup_user_and_groups):
     group_ids_to_add = [g.id for g in groups]
 
     response = test_client.post(
-        f"/user_groups",
+        f"/user_groups/",
         data=json.dumps({"group_ids": group_ids_to_add}),
         content_type="application/json",
         headers={"Authorization": f"Bearer {token}"}
@@ -107,7 +105,7 @@ def test_add_user_to_groups_invalid_group_ids(test_client, setup_user_and_groups
     non_existent_group_ids = [999, 1000]
 
     response = test_client.post(
-        f"/user_groups",
+        f"/user_groups/",
         data=json.dumps({"group_ids": non_existent_group_ids}),
         content_type="application/json",
         headers={"Authorization": f"Bearer {token}"}
@@ -124,7 +122,7 @@ def test_add_user_to_groups_missing_group_ids(test_client, get_auth_token):
     token, _ = get_auth_token
 
     response = test_client.post(
-        f"/user_groups",
+        f"/user_groups/",
         data=json.dumps({}),
         content_type="application/json",
         headers={"Authorization": f"Bearer {token}"}
@@ -134,24 +132,23 @@ def test_add_user_to_groups_missing_group_ids(test_client, get_auth_token):
     assert response.get_json()["error"] == "List 'group_ids' is required"
 
 
-# --- Тесты для DELETE /user_groups ---
-def test_remove_user_from_groups_success(test_client, setup_user_and_groups):
+# --- Тесты для DELETE /user_groups/ ---
+# --- Тесты для DELETE /user_groups/ ---
+def test_remove_user_from_groups_success(test_client, setup_user_and_groups, db_session):
     """
     Тест на успешное удаление пользователя из групп.
     """
     token, user_id, groups = setup_user_and_groups
-    db_sess = create_session()
-    user = db_sess.get(User, user_id)
+    user = db_session.get(User, user_id)
     # Добавляем пользователя во все группы
     for group in groups:
         user.groups.append(group)
-    db_sess.commit()
-    db_sess.close()
+    db_session.commit()
 
     group_ids_to_remove = [groups[0].id, groups[1].id]
 
     response = test_client.delete(
-        f"/user_groups",
+        f"/user_groups/",
         data=json.dumps({"group_ids": group_ids_to_remove}),
         content_type="application/json",
         headers={"Authorization": f"Bearer {token}"}
@@ -164,11 +161,9 @@ def test_remove_user_from_groups_success(test_client, setup_user_and_groups):
     assert len(data["groups"]) == 1
     assert groups[2].name in [g["name"] for g in data["groups"]]
 
-    db_sess = create_session()
-    user = db_sess.get(User, user_id)
+    # Проверяем в БД, что группа действительно удалена
+    db_session.refresh(user)
     assert len(user.groups) == 1
-    db_sess.close()
-
 
 def test_remove_user_from_groups_missing_group_ids(test_client, get_auth_token):
     """
@@ -177,7 +172,7 @@ def test_remove_user_from_groups_missing_group_ids(test_client, get_auth_token):
     token, _ = get_auth_token
 
     response = test_client.delete(
-        f"/user_groups",
+        f"/user_groups/",
         data=json.dumps({}),
         content_type="application/json",
         headers={"Authorization": f"Bearer {token}"}

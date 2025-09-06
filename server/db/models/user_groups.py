@@ -9,6 +9,6 @@ class UserGroup(SqlAlchemyBase):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)
 
-    user = relationship("User", back_populates="user_groups")
-    group = relationship("Group", back_populates="user_groups")
+    user = relationship("User", back_populates="user_groups", overlaps="groups,users")
+    group = relationship("Group", back_populates="user_groups", overlaps="groups,users")
 
