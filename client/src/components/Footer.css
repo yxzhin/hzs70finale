@@ -1,0 +1,16 @@
+#footer {
+    background-color: var(--extra-dark);
+    color: var(--white);
+    display: flex;
+    justify-content: space-around;
+    flex-direction: row;
+    height: 200px;
+    text-align: center;
+    align-items: center;
+    background-color: var(--darker);
+}
+
+#footer p {
+    margin-top: 20px;
+    font-size: 13pt;
+}
