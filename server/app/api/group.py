@@ -64,6 +64,7 @@ class GroupResource(Resource):
 
             group = Group(
                 name=group_name,
+                owner_id=user_id,
             )
 
             user_groups = [
