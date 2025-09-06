@@ -8,6 +8,7 @@
     text-align: center;
     align-items: center;
     background-color: var(--darker);
+    margin-top: 100px;
 }
 
 #footer p {
