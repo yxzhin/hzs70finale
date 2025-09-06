@@ -138,95 +138,6 @@ class GroupResource(Resource):
         finally:
             db_sess.close()
 
-
-class UserGroupResource(Resource):
-    def get(self):
-        db_sess = create_session()
-        try:
-            data = request.get_json(force=True)
-            user_id = data.get("user_id")
-
-            if not user_id:
-                return {"error": "'user_id' is required"}, 400
-
-            user = db_sess.get(User, user_id)
-            if not user:
-                return {"message": "User not found"}, 404
-
-            return {
-                "user_id": user.id,
-                "groups": [group.to_dict() for group in user.groups]
-            }, 200
-
-        except Exception as e:
-            return {"message": f"An error occurred: {str(e)}"}, 500
-
-        finally:
-            db_sess.close()
-
-    def post(self):
-        db_sess = create_session()
-        try:
-            data = request.get_json(force=True)
-            user_id = data.get("user_id")
-            group_ids = data.get("group_ids")
-
-            if not user_id or not isinstance(group_ids, list):
-                return {"error": "'user_id' and list 'group_ids' are required"}, 400
-
-            user = db_sess.get(User, user_id)
-            if not user:
-                return {"message": "User not found"}, 404
-
-            groups = db_sess.query(Group).filter(Group.id.in_(group_ids)).all()
-            if not groups:
-                return {"message": "No valid groups found"}, 400
-
-            for group in groups:
-                if group not in user.groups:
-                    user.groups.append(group)
-
-            db_sess.commit()
-
-            return {
-                "message": f"User {user_id} added to groups",
-                "groups": [group.to_dict() for group in user.groups]
-            }, 200
-
-        except Exception as e:
-            return {"message": f"An error occurred: {str(e)}"}, 500
-        finally:
-            db_sess.close()
-
-    @jwt_tokens.token_required
-    def delete(self, user_id):
-        db_sess = create_session()
-        try:
-            data = request.get_json(force=True)
-            group_ids = data.get("group_ids")
-
-            if not user_id or not isinstance(group_ids, list):
-                return {"error": "'user_id' and list 'group_ids' are required"}, 400
-
-            user = db_sess.get(User, user_id)
-            if not user:
-                return {"message": "User not found"}, 404
-
-            user.groups = [g for g in user.groups if g.id not in group_ids]
-
-            db_sess.commit()
-
-            return {
-                "message": f"User {user_id} removed from specified groups",
-                "groups": [group.to_dict() for group in user.groups]
-            }, 200
-
-        except Exception as e:
-            return {"message": f"An error occurred: {str(e)}"}, 500
-        finally:
-            db_sess.close()
-
-
 class AllUserGroupsResource(Resource):
     @jwt_tokens.token_required
     def get(self, user_id: int):
@@ -249,7 +160,5 @@ class AllUserGroupsResource(Resource):
         finally:
             db_sess.close()
 
-
 api.add_resource(GroupResource, "/<int:group_id>", "/")
-api.add_resource(UserGroupResource, "/")
 api.add_resource(AllUserGroupsResource, "/all_user_groups")

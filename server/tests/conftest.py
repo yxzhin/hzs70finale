@@ -70,18 +70,3 @@ def get_auth_token(test_client, clean_tables):
     user_id = data["user"]["id"]
 
     return token, user_id
-
-
-@pytest.fixture
-def create_category():
-    session = create_session()
-
-    category = ListingCategory(name="Test Category")
-    session.add(category)
-    session.commit()
-
-    yield category
-    session.delete(category)
-    session.commit()
-
-    session.close()
