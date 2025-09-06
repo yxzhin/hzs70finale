@@ -11,6 +11,7 @@ import Hero from './pages/Hero';
 import Dashboard from './pages/Dashboard';
 import SignUpPage from './pages/SignUp';
 import Information from './pages/Information';
+import Invite from './pages/Invite';
 
 // Logic
 import SignUpRequest from './logic/SignUpRequests';
@@ -30,6 +31,7 @@ function App() {
                     <Route path="/signup" element={<SignUpPage />} />
                     <Route path="/signup" element={<SignUpPage />} />
                     <Route path="/info" element={<Information />} />
+                    <Route path="/invite" element={<Invite />} />
                     <Route path="/sign_up_submit" element={<SignUpRequest />} />
                     <Route path="/log_in_submit" element={<LogInRequest />} />
                     <Route path="/logout" element={<Logout />} />
