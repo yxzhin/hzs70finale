@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import './App.css';
 
@@ -8,6 +8,7 @@ import Footer from './components/Footer';
 
 // Pages
 import Hero from './pages/Hero';
+import SignUpPage from './pages/SignUp';
 
 function App() {
     return (
@@ -17,6 +18,8 @@ function App() {
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<Hero />} />
+                    <Route path="/signup" element={<SignUpPage />} />
+                    {/*<Route path="*" element={<Navigate to="/" replace />} />*/}
                 </Routes>
             </BrowserRouter>
             <Footer />
