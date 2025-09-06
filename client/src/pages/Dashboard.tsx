@@ -1,7 +1,13 @@
 import "./Dashboard.css";
 import DebtItem from "../components/DebtItem";
+import SplitOverlay from "../components/SplitOverlay";
+import { useState } from "react";
 
 function Dashboard() {
+  const [isOverlayOpen, setIsOverlayOpen] = useState(false);
+  let theyOweValue = "$40.00";
+  let youOweValue = "$17.50";
+  let historyValue = "$40.00";
   return (
     <div className="dashboard">
       <div className="dashboard-content">
@@ -10,18 +16,19 @@ function Dashboard() {
             <h1 className="dashboard-title">
               Welcome <span className="red-text">User</span>,<br />
             </h1>
-            <input type="spending" className="input" placeholder="Product" />
-            <input type="cost" className="input" placeholder="Price" />
-            <button className="primary-btn">+</button>
+            <div className="add-spending-section">
+              <h1 className="dashboard-title">Add a spending:</h1>
+              <button className="primary-btn" onClick={() => setIsOverlayOpen(true)}>+</button>
+            </div>
           </div>
           <div className="dashboard-header-right">
-            <button className="secondary-btn">Leave</button>
-            <button className="secondary-btn">Add Friend</button>
+            <button className="primary-btn">Leave</button>
+            <button className="primary-btn">Add Friend</button>
           </div>
         </div>
         <div className="table-section">
           <div className="they-owe">
-            <h2 className="table-title">They Owe You</h2>
+            <h2 className="table-title">They Owe You {theyOweValue}</h2>
             <div className="debt-list">
               <DebtItem
                 person="John Doe"
@@ -39,7 +46,7 @@ function Dashboard() {
           </div>
 
           <div className="you-owe">
-            <h2 className="table-title">You Owe Them</h2>
+            <h2 className="table-title">You Owe Them {youOweValue}</h2>
             <div className="debt-list">
               <DebtItem
                 person="Bob Johnson"
@@ -58,7 +65,9 @@ function Dashboard() {
         </div>
         <div className="table-section">
           <div className="history">
-            <h2 className="table-title">History</h2>
+            <h2 className="table-title">
+              Group history: spent {historyValue} together
+            </h2>
             <div className="debt-list">
               <DebtItem
                 person="John Doe"
@@ -76,6 +85,15 @@ function Dashboard() {
           </div>
         </div>
       </div>
+      <SplitOverlay
+        isOpen={isOverlayOpen}
+        onClose={() => setIsOverlayOpen(false)}
+        onApply={(data) => {
+          console.log("Split data:", data);
+          setIsOverlayOpen(false);
+          // Here you would handle the split data
+        }}
+      />
     </div>
   );
 }

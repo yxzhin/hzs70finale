@@ -50,3 +50,15 @@
     margin-bottom: 170px;
     flex-direction: column;
 }
+
+.dashboard-header-right {
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+}
+
+.add-spending-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
