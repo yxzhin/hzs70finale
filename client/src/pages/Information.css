@@ -1,0 +1,31 @@
+.information {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.information .sec {
+    width: 70%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 100px;
+}
+
+.information img {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.information .lside-sec, .information .rside-sec {
+    width: 45%;
+}
+
+.title-info {
+    color: var(--white);
+}
+
+.desc-info {
+    color: var(--white);
+}
