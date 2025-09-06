@@ -6,23 +6,20 @@ from server.db.db_session import create_session
 from server.db.models.__all_models import User, Group, UserGroup
 from server.app.utils import jwt_tokens
 
-groups_api_bp = Blueprint(
+groups_bp = Blueprint(
     "groups_api",
     __name__,
     url_prefix="/groups",
 )
 
-api = Api(groups_api_bp)
+api = Api(groups_bp)
 
 
 class GroupResource(Resource):
     def get(self, group_id: int):
         db_sess = create_session()
         try:
-            query = db_sess.query(Group)
-            # //@TODO
-            # query = query.options(joinedload(Group.category))
-            group = query.get(group_id)
+            group = db_sess.get(Group, group_id)
 
             if not group:
                 return {"message": "group not found"}, 404
@@ -96,7 +93,7 @@ class GroupResource(Resource):
             if not group:
                 return {"message": "group not found"}, 404
 
-            if group.user_id != user_id:
+            if group.owner_id != user_id:
                 return {"message": "permission denied"}, 403
 
             data = request.get_json()
@@ -118,17 +115,16 @@ class GroupResource(Resource):
     def delete(self, group_id: int, user_id: int):
         db_sess = create_session()
         try:
-            group = db_sess.query(Group).get(group_id)
+            # Use the modern Session.get()
+            group = db_sess.get(Group, group_id)
             if not group:
                 return {"message": "group not found"}, 404
 
-            if group.user_id != user_id:
+            if group.owner_id != user_id:
                 return {"message": "permission denied"}, 403
 
             db_sess.delete(group)
-            user_groups = db_sess.query(UserGroup).filter(group_id=group_id)
-            user_groups.delete(synchronize_session=False)
-            db_sess.commit()
+            db_sess.commit()  # This commit will trigger the cascading delete
 
             return {"message": "group deleted"}, 200
 
@@ -137,6 +133,7 @@ class GroupResource(Resource):
 
         finally:
             db_sess.close()
+
 
 class AllUserGroupsResource(Resource):
     @jwt_tokens.token_required
@@ -159,6 +156,7 @@ class AllUserGroupsResource(Resource):
             return {"message": f"An error occurred: {str(e)}"}, 500
         finally:
             db_sess.close()
+
 
 api.add_resource(GroupResource, "/<int:group_id>", "/")
 api.add_resource(AllUserGroupsResource, "/all_user_groups")
