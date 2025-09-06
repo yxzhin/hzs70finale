@@ -5,11 +5,6 @@ function Invite() {
         return (id ^ 123456).toString(12);
     }
 
-    const decodeId = (encoded: string): number => {
-        const scrambled = parseInt(encoded, 12);
-        return scrambled ^ 123456;
-    };
-
     const groupId = Number(new URLSearchParams(window.location.search).get('id')) || 0;
     const groupName = "Example Group";
 
