@@ -21,6 +21,9 @@ class Expense(SqlAlchemyBase):
     is_paid = Column(Boolean, nullable=False)
 
     group = relationship("Group")
+    expense_participants = relationship("ExpenseParticipant", back_populates="expense")
+    payments = relationship("Payment", back_populates="expense")
+    debts = relationship("Debt", back_populates="expense")
 
     def to_dict(self):
         return {

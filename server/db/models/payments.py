@@ -12,12 +12,12 @@ class Payment(SqlAlchemyBase):
     amount = Column(Float, nullable=False)
 
     expense = relationship("Expense", back_populates="payments")
-    payer = relationship("User", back_populates="payments")
+    payer = relationship("User")
 
     def to_dict(self):
         return {
             "id": self.id,
             "expense_id": self.expense_id,
             "payer_id": self.payer_id,
-            "amount": self.amount
+            "amount": self.amount,
         }

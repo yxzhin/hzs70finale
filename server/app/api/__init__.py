@@ -1,5 +1,5 @@
 from flask import Blueprint
-from server.app.api.user import user_api_bp
+from server.app.api.user import user_api_bp, test_bp
 
 api_bp = Blueprint(
     "api",
@@ -7,3 +7,4 @@ api_bp = Blueprint(
 )
 
 api_bp.register_blueprint(user_api_bp)
+api_bp.register_blueprint(test_bp)
