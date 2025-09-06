@@ -1,3 +1,6 @@
+import { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import './Hero.css';
 
 import HeroSection from '../components/HeroSection';
