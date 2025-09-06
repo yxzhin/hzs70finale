@@ -1,5 +1,7 @@
 import './Hero.css';
 
+import HeroSection from '../components/HeroSection';
+
 function Hero() {
     return (
         <div className="hero">
@@ -27,6 +29,28 @@ function Hero() {
                     <img src='/hero-img.png' alt='Hero' className='hero-img' />
                 </div>
             </div>
+
+            <HeroSection
+                title={<h1 className='hero-sec-title'>No more awkward <span className='red-text'>IOU</span>-s</h1>}
+                description={<p className='hero-sec-subtitle'>Stop chasing friends for money -
+                    <span className='red-text'> Split</span>Smart 
+                    keeps everything transparent and fair.</p>
+                    
+                }
+                imageSrc='IOU.png'
+            />
+
+            <HeroSection
+                title={<h1 className='hero-sec-title'><span className='red-text'>Fair</span> splits, always</h1>}
+                description={<p className='hero-sec-subtitle'>Log bills quickly and let the app do the math for you.</p>}
+                imageSrc='notes.png'
+            />
+
+            <HeroSection
+                title={<h1 className='hero-sec-title'>Track <span className='red-text'>expenses</span> in seconds</h1>}
+                description={<p className='hero-sec-subtitle'>From equal shares to custom splits, everyone pays their fair part.</p>}
+                imageSrc='equalizer.png'
+            />
         </div>
     );
 }

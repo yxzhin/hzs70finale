@@ -1,14 +1,15 @@
 .hero {
     width: 100%;
     display: flex;
-    justify-content: center;
     align-items: center;
+    flex-direction: column;
 }
 
 .hero-sec {
     width: 70%;
     display: flex;
     margin-top: 200px;
+    margin-bottom: 170px;
 }
 
 .lside-hero {
