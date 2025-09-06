@@ -29,3 +29,7 @@
 .desc-info {
     color: var(--white);
 }
+
+.rside-sec .desc-info, .rside-sec .title-info {
+    text-align: right;
+}
