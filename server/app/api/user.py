@@ -6,13 +6,13 @@ from server.db.models.users import User
 from server.db.db_session import create_session
 from server.app.utils import jwt_tokens
 
-user_api_bp = Blueprint(
+user_bp = Blueprint(
     "user_api",
     __name__,
     url_prefix="/user",
 )
 
-api = Api(user_api_bp)
+api = Api(user_bp)
 
 
 class UserResource(Resource):
