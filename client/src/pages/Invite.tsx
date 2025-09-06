@@ -1,14 +1,10 @@
 import './Invite.css';
 
 function Invite() {
-    const encodeId = (id: number) => {
-        return (id ^ 123456).toString(12);
-    }
-
     const groupId = Number(new URLSearchParams(window.location.search).get('id')) || 0;
     const groupName = "Example Group";
 
-    const inviteLink = `${window.location.origin}/join?group=${encodeId(groupId)}`;
+    const inviteLink = `${window.location.origin}/join?group=${groupId}`;
 
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(inviteLink)}&size=200x200`;
 
