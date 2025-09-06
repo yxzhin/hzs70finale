@@ -33,3 +33,40 @@
 .rside-sec .desc-info, .rside-sec .title-info {
     text-align: right;
 }
+
+@media (max-width: 1250px) {
+    .information .sec {
+        width: 90%;
+    }
+}
+
+@media (max-width: 850px) {
+    .information .sec {
+        flex-direction: column;
+        margin-top: 50px;
+        text-align: center;
+    }
+
+    .information .lside-sec, .information .rside-sec {
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .information .sec2 {
+        flex-direction: column-reverse;
+    }
+
+    .information .sec2 .rside-sec .desc-info, .information .sec2 .rside-sec .title-info {
+        text-align: center;
+    }
+}
+
+@media (max-width: 400px) {
+    .information .sec {
+        width: 95%;
+    }
+
+    .desc-info {
+        font-size: 14px;
+    }
+}
