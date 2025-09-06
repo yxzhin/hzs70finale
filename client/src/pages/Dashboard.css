@@ -1,0 +1,54 @@
+.table-section {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 50px;
+    gap: 2rem;
+}
+
+.owe-you, .you-owe {
+    background-color: var(--darker);
+    padding: 1.5rem;
+    border-radius: 10px;
+    width: 100%;
+}
+
+.debt-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.debt-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--dark-grey);
+    border-radius: 5px;
+}
+
+.debt-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.debt-person {
+    color: var(--white);
+    font-weight: 600;
+}
+
+.debt-reason {
+    color: var(--grey);
+    font-style: italic;
+}
+
+.debt-amount {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.table-title {
+    color: var(--white);
+    margin-bottom: 1rem;
+}

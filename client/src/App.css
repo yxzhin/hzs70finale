@@ -49,3 +49,13 @@ body {
 .red-text {
     color: var(--primary);
 }
+
+.app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.app > *:last-child {
+    margin-top: auto;
+}

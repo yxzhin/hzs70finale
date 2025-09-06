@@ -3,6 +3,44 @@ import './Hero.css';
 import HeroSection from '../components/HeroSection';
 
 function Hero() {
+    const navigate = useNavigate();
+
+    // Attempt to log in with a JWT token
+    const token = localStorage.getItem('jwt');
+    if (token) {
+        const hasFetched = useRef(false);
+            
+        useEffect(() => {
+            if (hasFetched.current) return;
+            hasFetched.current = true;
+        
+            fetch("http://localhost:5000/api/user/current_user", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+            .then(async (res) => {
+                if (res.status == 404) {
+                    return;
+                } else if (res.status == 500) {
+                    localStorage.setItem('jwt', '');
+                    window.location.reload();
+                } else if (res.status == 200) {
+                    const result = await res.json();
+                    console.log("Server response:", result);
+                    navigate("/dashboard", { replace: true });
+                } else {
+                    throw new Error(`Unexpected status: ${res.status}`);
+                }
+            })
+            .catch(err => {
+                console.error("Registration error:", err);
+                navigate("/sign_in?error=server", { replace: true });
+            });
+        }, [navigate]);
+    }
+    
     return (
         <div className="hero">
             <div className="hero-sec">
