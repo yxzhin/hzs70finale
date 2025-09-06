@@ -7,7 +7,7 @@ function Header () {
     const token = localStorage.getItem('jwt');
     if (token) {
         text = "Log Out";
-        link = "/";
+        link = "/logout";
     }
     // Need to add the drop down menu for the dashboard view. Needs several returns based on if the user is logged in or not
     return (

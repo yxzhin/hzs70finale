@@ -15,6 +15,7 @@ import Information from './pages/Information';
 // Logic
 import SignUpRequest from './logic/SignUpRequests';
 import LogInRequest from './logic/LogInRequests';
+import Logout from './logic/Logout';
 
 function App() {
     
@@ -31,6 +32,7 @@ function App() {
                     <Route path="/info" element={<Information />} />
                     <Route path="/sign_up_submit" element={<SignUpRequest />} />
                     <Route path="/log_in_submit" element={<LogInRequest />} />
+                    <Route path="/logout" element={<Logout />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </BrowserRouter>
