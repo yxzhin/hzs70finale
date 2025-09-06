@@ -12,7 +12,7 @@ function Hero() {
     const token = localStorage.getItem('jwt');
     if (token) {
         const hasFetched = useRef(false);
-            
+        
         useEffect(() => {
             if (hasFetched.current) return;
             hasFetched.current = true;

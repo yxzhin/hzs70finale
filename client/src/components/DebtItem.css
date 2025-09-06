@@ -28,3 +28,27 @@
     color: var(--primary);
     font-weight: 600;
 }
+
+@media (max-width: 650px) {
+    .debt-info .primary-btn {
+        font-size: 12pt;
+    }
+
+    .debt-amount {
+        font-size: 10pt;
+    }
+
+    .debt-reason {
+        font-size: 10pt;
+    }
+}
+
+@media (max-width: 430px) {
+    .debt-item {
+        padding: 16px 8px;
+    }
+
+    .debt-person {
+        font-size: 10pt;
+    }
+}

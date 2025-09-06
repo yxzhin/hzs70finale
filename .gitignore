@@ -3,6 +3,7 @@ server/db/hzs70finale.sqlite
 server/venv
 client/node_modules/
 .idea/
+server/db/test.sqlite
 
 
 client/.vite/
