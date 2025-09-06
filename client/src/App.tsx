@@ -10,6 +10,9 @@ import Footer from './components/Footer';
 import Hero from './pages/Hero';
 import SignUpPage from './pages/SignUp';
 
+// Logic
+import SignUpRequest from './logic/SignUpRequests';
+
 function App() {
     return (
         <div className="app">
@@ -19,7 +22,8 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Hero />} />
                     <Route path="/signup" element={<SignUpPage />} />
-                    {/*<Route path="*" element={<Navigate to="/" replace />} />*/}
+                    <Route path="/sign_up_submit" element={<SignUpRequest />} />
+                    <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </BrowserRouter>
             <Footer />
