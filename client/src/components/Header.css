@@ -1,0 +1,17 @@
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 50px;
+    background-color: var(--darker);
+}
+
+.header-title {
+    color: var(--white);
+    font-size: 24pt;
+    font-weight: 700;
+}
+
+.header-info-link {
+    margin-right: 20px;
+}
