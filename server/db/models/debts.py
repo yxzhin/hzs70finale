@@ -14,8 +14,8 @@ class Debt(SqlAlchemyBase):
     is_paid = Column(Boolean, default=False)
 
     expense = relationship("Expense", back_populates="debts")
-    debtor = relationship("User", foreign_keys=[debtor_id], back_populates="debts_owed")
-    creditor = relationship("User", foreign_keys=[creditor_id], back_populates="debts_owed_to_me")
+    debtor = relationship("User", foreign_keys=[debtor_id])
+    creditor = relationship("User", foreign_keys=[creditor_id])
 
     def to_dict(self):
         return {

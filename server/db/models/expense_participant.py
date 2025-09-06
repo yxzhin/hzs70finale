@@ -13,7 +13,7 @@ class ExpenseParticipant(SqlAlchemyBase):
     percentage = Column(Float, nullable=True)
     is_paid = Column(Boolean, nullable=False, default=False)
 
-    expense = relationship("Expense", back_populates="shares")
+    expense = relationship("Expense", back_populates="expense_participants")
     user = relationship("User")
 
     def to_dict(self):
