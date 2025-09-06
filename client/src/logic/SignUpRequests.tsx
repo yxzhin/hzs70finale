@@ -43,7 +43,7 @@ function SignUpRequest() {
                 console.log("Server response:", result);
                 localStorage.setItem('jwt', result['token']);
                 localStorage.setItem('userid', result['user']['id']);
-                navigate("/success", { replace: true });
+                navigate("/dashboard", { replace: true });
             })
             .catch(err => {
                 console.error("Registration error:", err);

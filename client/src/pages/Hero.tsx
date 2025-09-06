@@ -4,8 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import './Hero.css';
 
 import HeroSection from '../components/HeroSection';
-import { useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 function Hero() {
     const navigate = useNavigate();

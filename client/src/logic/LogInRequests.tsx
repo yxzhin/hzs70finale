@@ -38,7 +38,7 @@ function LogInRequest() {
                     if (result?.token && result?.user?.id) {
                         localStorage.setItem('jwt', result['token']);
                         localStorage.setItem('userid', result['user']['id']);
-                        navigate(`/success`, { replace: true });
+                        navigate(`/dashboard`, { replace: true });
                     } else {
                         navigate("/sign_in?error=invalid_response", { replace: true });
                     }
