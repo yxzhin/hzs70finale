@@ -15,3 +15,37 @@ header {
 .header-info-link {
     margin-right: 20px;
 }
+
+@media (max-width: 500px) {
+    header {
+        padding: 25px 15px;
+    }
+
+    .header-title {
+        font-size: 18pt;
+    }
+
+    .header-info-link {
+        font-size: 10pt;
+    }
+
+    header .primary-btn {
+        font-size: 14pt;
+    }
+}
+
+@media (max-width: 360px) {
+    .header-info-link {
+        margin-right: 5px;
+    }
+
+    header .primary-btn {
+        font-size: 12pt;
+    }
+}
+
+@media (max-width: 325px) {
+    .header-info-link {
+        display: none;
+    }
+}
