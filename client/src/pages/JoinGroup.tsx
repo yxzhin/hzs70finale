@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useFetcher, useNavigate } from "react-router-dom";
 
 import './JoinGroup.css';
 
@@ -13,7 +13,9 @@ function JoinGroup() {
     const token = localStorage.getItem('jwt');
 
     if (!token) {
-        setToRedirect(true);
+        useEffect(() => {
+            navigate('/signup', { replace: true });
+        })
     }
     else {
         const hasFetched = useRef(false);
