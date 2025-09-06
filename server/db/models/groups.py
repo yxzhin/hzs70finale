@@ -11,9 +11,6 @@ class Group(SqlAlchemyBase):
 
     users = relationship("User", secondary="user_groups", back_populates="groups")
 
-    def __repr__(self):
-        return f"<Group(name='{self.name}')>"
-
     def to_dict(self, users_req=False):
         output = {
             "id": self.id,

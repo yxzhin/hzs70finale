@@ -5,11 +5,11 @@ from sqlalchemy.orm import relationship
 
 
 class Expense(SqlAlchemyBase):
-    __tablename__ = "expense"
+    __tablename__ = "expenses"
 
     id = Column(Integer, primary_key=True)
     group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)
-    title = Column(String(73), nullable=False)
+    title = Column(String(100), nullable=False)
     amount = Column(Integer, nullable=False)
     currency = Column(String(3), nullable=False)
     expense_type = Column(String(20), nullable=False)
