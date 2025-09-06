@@ -8,13 +8,15 @@ class Group(SqlAlchemyBase):
 
     id = Column(Integer, primary_key=True)
     name = Column(String, unique=True, nullable=False)
+    owner_id = Column(Integer, nullable=False)
 
     users = relationship("User", secondary="user_groups", back_populates="groups")
 
     def to_dict(self, users_req=False):
         output = {
             "id": self.id,
-            "name": self.name
+            "name": self.name,
+            "owner_id": self.owner_id,
         }
 
         if users_req:
