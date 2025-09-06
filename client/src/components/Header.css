@@ -1,19 +1,22 @@
 header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 25px 50px;
-    background-color: var(--darker);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 50px;
+  background-color: var(--darker);
 }
 
 .header-title {
-    color: var(--white);
-    font-size: 24pt;
-    font-weight: 700;
+  color: var(--white);
+  font-size: 24pt;
+  font-weight: 700;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }
 
 .header-info-link {
-    margin-right: 20px;
+  margin-right: 20px;
 }
 
 @media (max-width: 500px) {

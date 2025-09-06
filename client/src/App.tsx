@@ -8,15 +8,16 @@ import Footer from './components/Footer';
 
 // Pages
 import Hero from './pages/Hero';
+import Dashboard from './pages/Dashboard';
 import SignUpPage from './pages/SignUp';
 import Information from './pages/Information';
-import Success from './pages/Success';
 
 // Logic
 import SignUpRequest from './logic/SignUpRequests';
 import LogInRequest from './logic/LogInRequests';
 
 function App() {
+    
     return (
         <div className="app">
             <Header />
@@ -24,10 +25,10 @@ function App() {
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<Hero />} />
+                    <Route path="/Dashboard" element={<Dashboard />} />
                     <Route path="/signup" element={<SignUpPage />} />
                     <Route path="/signup" element={<SignUpPage />} />
                     <Route path="/info" element={<Information />} />
-                    <Route path="/success" element={<Success />} />
                     <Route path="/sign_up_submit" element={<SignUpRequest />} />
                     <Route path="/log_in_submit" element={<LogInRequest />} />
                     <Route path="*" element={<Navigate to="/" replace />} />

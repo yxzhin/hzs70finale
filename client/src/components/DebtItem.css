@@ -1,0 +1,30 @@
+.debt-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--dark-grey);
+    border-radius: 5px;
+}
+
+.debt-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.debt-person {
+    color: var(--white);
+    font-weight: 600;
+}
+
+.debt-reason {
+    color: var(--grey);
+    font-style: italic;
+}
+
+.debt-amount {
+    color: var(--primary);
+    font-weight: 600;
+}

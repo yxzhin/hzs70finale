@@ -1,0 +1,83 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.overlay-content {
+    background-color: var(--darker);
+    padding: 2rem;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 800px;
+    color: var(--white);
+}
+
+.input-group {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.participants {
+    margin: 1rem 0;
+}
+
+.checkbox-label {
+    display: block;
+    margin: 0.5rem 0;
+    color: var(--white);
+}
+
+.split-table {
+    width: 100%;
+    margin: 1rem 0;
+    border-collapse: collapse;
+}
+
+.split-table th,
+.split-table td {
+    padding: 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid var(--dark-grey);
+}
+
+.total-row {
+    font-weight: bold;
+}
+
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.input {
+    background-color: var(--dark-grey);
+    border: none;
+    color: var(--white);
+    padding: 0.5rem;
+    border-radius: 5px;
+}
+
+.input:disabled {
+    opacity: 0.5;
+}
+
+.check-name {
+    align-items: center;
+    gap: 0.5rem;
+}

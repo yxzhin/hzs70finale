@@ -1,3 +1,6 @@
+import { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import './Hero.css';
 
 import HeroSection from '../components/HeroSection';
@@ -31,7 +34,7 @@ function Hero() {
                 } else if (res.status == 200) {
                     const result = await res.json();
                     console.log("Server response:", result);
-                    navigate("/success", { replace: true });
+                    navigate("/dashboard", { replace: true });
                 } else {
                     throw new Error(`Unexpected status: ${res.status}`);
                 }
