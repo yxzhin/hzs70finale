@@ -22,3 +22,31 @@
     color: var(--white);
     margin-bottom: 1rem;
 }
+
+.dashboard-title {
+    color: var(--white);
+    font-size: 32pt;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dashboard{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 50px;
+    height:100vh;
+}
+
+.dashboard-content {
+    width: 70%;
+    display: flex;
+    margin-top: 50px;
+    margin-bottom: 170px;
+    flex-direction: column;
+}
