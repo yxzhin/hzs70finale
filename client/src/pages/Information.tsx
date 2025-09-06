@@ -25,12 +25,9 @@ function Information() {
                 </div>
 
                 <div className="rside-sec">
-                    <h1 className='title-info'>What is this app?</h1>
+                    <h1 className='title-info'>Who are we?</h1>
                     <p className='desc-info'>
-                        SplitSmart is the easiest way for young people to share expenses with friends, roommates, or travel groups.
-                        Instead of awkward money talks or endless spreadsheets, it keeps everything transparent by
-                        tracking who paid what and calculating balances instantly.<br />
-                        Whether you're splitting rent, utilities, groceries, or trip costs, the app makes sure everyone pays their fair share. With simple expense logging, instant balance updates, and quick settle-up options, managing shared money becomes stress-free and even fun. SplitSmart turns everyday bill-splitting into a smart financial habit.
+                        We are a group of four programmers from Serbia. We specialize in making web applications that solve practical problems. Together, we created SplitSmart to tackle one of the most common everyday challenges young people face: sharing expenses fairly. Our goal is to build tools that are not only functional but also easy to use and enjoyable, turning stressful tasks into smooth experiences. With a mix of modern design, reliable technology, and a focus on real-world needs, we bring ideas to life that help people save time, reduce friction, and learn smarter habits along the way.
                     </p>
                 </div>
             </div>
