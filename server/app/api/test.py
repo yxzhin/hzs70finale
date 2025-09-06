@@ -30,7 +30,7 @@ def test_data():
     db_session.flush()
 
     # === GROUP ===
-    group1 = Group(name="Pizza Party")
+    group1 = Group(name="Pizza Party", owner_id=1)
     group1.users.extend([user1, user2, user3, user4])
     db_session.add(group1)
     db_session.flush()

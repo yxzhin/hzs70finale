@@ -1,9 +1,14 @@
-from sqlalchemy import Table, Column, Integer, ForeignKey
+from sqlalchemy import Column, Integer, ForeignKey
+from sqlalchemy.orm import relationship
 from server.db.db_session import SqlAlchemyBase
 
-user_groups = Table(
-    "user_groups",
-    SqlAlchemyBase.metadata,
-    Column("user_id", Integer, ForeignKey("users.id")),
-    Column("group_id", Integer, ForeignKey("groups.id"))
-)
+
+class UserGroup(SqlAlchemyBase):
+    __tablename__ = 'user_groups'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)
+
+    user = relationship("User", back_populates="user_groups", overlaps="groups,users")
+    group = relationship("Group", back_populates="user_groups", overlaps="groups,users")
+

@@ -12,7 +12,9 @@ class User(SqlAlchemyBase, UserMixin):
     username = Column(String, unique=True, nullable=False)
     hashed_password = Column(String, nullable=False)
 
-    groups = relationship("Group", "user_groups", back_populates="users")
+    user_groups = relationship("UserGroup", back_populates="user", cascade="all, delete-orphan")
+    groups = relationship("Group", secondary="user_groups", back_populates="users", overlaps="user_groups")
+    owned_groups = relationship("Group", back_populates="owner")
 
     def to_dict(self, groups_req=False):
         output = {

@@ -1,7 +1,8 @@
 from flask import Blueprint
 from server.app.api.user import user_bp
+from server.app.api.group import groups_bp
+from server.app.api.user_group import user_groups_bp
 from server.app.api.test import test_bp
-
 
 api_bp = Blueprint(
     "api",
@@ -9,4 +10,6 @@ api_bp = Blueprint(
 )
 
 api_bp.register_blueprint(user_bp)
+api_bp.register_blueprint(groups_bp)
+api_bp.register_blueprint(user_groups_bp)
 api_bp.register_blueprint(test_bp)
