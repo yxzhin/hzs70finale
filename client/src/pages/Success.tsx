@@ -45,7 +45,7 @@ function Success() {
         })
         .catch(err => {
             console.error("Registration error:", err);
-            navigate("/sign_in", { replace: true });
+            navigate("/signup", { replace: true });
         })
         .finally(() => {
             setLoading(false);
