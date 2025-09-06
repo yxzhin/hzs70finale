@@ -2,7 +2,7 @@ from server.db.models import users, groups, user_groups,expenses, expense_partic
 
 User = users.User
 Group = groups.Group
-UserGroup = user_groups.user_groups
+UserGroup = user_groups.UserGroup
 
 Expense = expenses.Expense
 ExpenseParticipant = expense_participant.ExpenseParticipant

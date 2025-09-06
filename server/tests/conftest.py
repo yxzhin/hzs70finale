@@ -1,4 +1,5 @@
 import pytest
+import os
 import json
 from server.app import create_app
 from server.db.db_session import global_init, create_session
@@ -7,15 +8,24 @@ from server.db.models.__all_models import User, Group, UserGroup, Expense, Expen
 
 @pytest.fixture(scope="session")
 def test_client():
+    # Задаем путь к тестовой базе данных
+    db_path = "db/test.sqlite"
     app = create_app()
     app.config["TESTING"] = True
-    app.config["SQLALCHEMY_DATABASE_URI"] = "db/test.sqlite"
+    app.config["SQLALCHEMY_DATABASE_URI"] = db_path
 
+    # Инициализация базы данных
     with app.app_context():
-        global_init("db/test.sqlite")
+        global_init(db_path)
 
+    # Предоставление тестового клиента
     with app.test_client() as client:
         yield client
+
+    # Код после 'yield' выполняется после завершения всех тестов
+    if os.path.exists(db_path):
+        os.remove(db_path)
+        print(f"\nDeleted test database file: {db_path}")
 
 
 @pytest.fixture(scope="function")
@@ -28,6 +38,7 @@ def db_session():
 
 @pytest.fixture(autouse=True)
 def clean_tables(db_session):
+    # Очистка таблиц перед каждым тестом
     db_session.query(User).delete()
     db_session.query(Group).delete()
     db_session.query(UserGroup).delete()
@@ -48,6 +59,7 @@ def get_auth_token(test_client, clean_tables):
         content_type="application/json"
     )
 
+    # Логинимся и получаем токен
     login_response = test_client.post(
         "/user/login",
         data=json.dumps({"username": "testuser", "password": "secret"}),

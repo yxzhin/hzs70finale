@@ -10,6 +10,7 @@ class Group(SqlAlchemyBase):
     name = Column(String, unique=True, nullable=False)
     owner_id = Column(Integer, nullable=False)
 
+    user_groups = relationship("UserGroup", back_populates="group", cascade="all, delete-orphan")
     users = relationship("User", secondary="user_groups", back_populates="groups")
 
     def to_dict(self, users_req=False):
