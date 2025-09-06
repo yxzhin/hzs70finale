@@ -22,9 +22,8 @@ function App() {
     
     return (
         <div className="app">
-            <Header />
-
             <BrowserRouter>
+            <Header />
                 <Routes>
                     <Route path="/" element={<Hero />} />
                     <Route path="/Dashboard" element={<Dashboard />} />
