@@ -30,10 +30,17 @@
     margin: 1rem 0;
 }
 
+.checkbox-group {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
 .checkbox-label {
-    display: block;
+    display: flex;
     margin: 0.5rem 0;
     color: var(--white);
+    gap:5px;
 }
 
 .split-table {

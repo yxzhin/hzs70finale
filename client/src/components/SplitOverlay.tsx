@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import "./SplitOverlay.css";
 
 interface Person {
@@ -6,6 +6,7 @@ interface Person {
     isParticipating: boolean;
     paid: string;
     shouldPay: string;
+    percentage: string;
 }
 
 interface SplitOverlayProps {
@@ -15,42 +16,50 @@ interface SplitOverlayProps {
 }
 
 function SplitOverlay({ isOpen, onClose, onApply }: SplitOverlayProps) {
+    // Sample people list, in a real app this would come from props or context
+    const peopleList = [
+        {
+            name: "John Doe",
+            isParticipating: false,
+            paid: "0",
+            shouldPay: "0",
+            percentage: "0",
+        },
+        {
+            name: "Alice Smith",
+            isParticipating: false,
+            paid: "0",
+            shouldPay: "0",
+            percentage: "0",
+        },
+        {
+            name: "Bob Johnson",
+            isParticipating: false,
+            paid: "0",
+            shouldPay: "0",
+            percentage: "0",
+        },
+        {
+            name: "Sarah Wilson",
+            isParticipating: false,
+            paid: "0",
+            shouldPay: "0",
+            percentage: "0",
+        },
+    ];
+    const [totalPercentage, setTotalPercentage] = useState(0);
     const [activity, setActivity] = useState("");
     const [totalAmount, setTotalAmount] = useState("");
     const [divideEqually, setDivideEqually] = useState(true);
-    const [people, setPeople] = useState<Person[]>([
-        { name: "John Doe", isParticipating: false, paid: "0", shouldPay: "0" },
-        { name: "Alice Smith", isParticipating: false, paid: "0", shouldPay: "0" },
-        { name: "Bob Johnson", isParticipating: false, paid: "0", shouldPay: "0" },
-        { name: "Sarah Wilson", isParticipating: false, paid: "0", shouldPay: "0" },
-    ]);
+    const [percentage, setPercentage] = useState(false);
+    const [people, setPeople] = useState<Person[]>(peopleList);
     const [totalPaid, setTotalPaid] = useState(0);
     const [isValid, setIsValid] = useState(false);
     const resetOverlay = () => {
         setActivity("");
         setTotalAmount("");
         setDivideEqually(true);
-        setPeople([
-            { name: "John Doe", isParticipating: false, paid: "0", shouldPay: "0" },
-            {
-                name: "Alice Smith",
-                isParticipating: false,
-                paid: "0",
-                shouldPay: "0",
-            },
-            {
-                name: "Bob Johnson",
-                isParticipating: false,
-                paid: "0",
-                shouldPay: "0",
-            },
-            {
-                name: "Sarah Wilson",
-                isParticipating: false,
-                paid: "0",
-                shouldPay: "0",
-            },
-        ]);
+        setPeople(peopleList);
         setTotalPaid(0);
         setIsValid(false);
     };
@@ -92,15 +101,35 @@ function SplitOverlay({ isOpen, onClose, onApply }: SplitOverlayProps) {
     ]);
 
     useEffect(() => {
+        if (percentage && totalAmount) {
+            setPeople(
+                people.map((person) => ({
+                    ...person,
+                    shouldPay: person.isParticipating
+                        ? (
+                            (parseFloat(totalAmount) *
+                                parseFloat(person.percentage || "0")) /
+                            100
+                        ).toFixed(2)
+                        : "0",
+                }))
+            );
+        }
+    }, [
+        percentage,
+        totalAmount,
+        people.map((p) => p.percentage).join(","),
+        people.map((p) => p.isParticipating).join(","),
+    ]);
+
+    useEffect(() => {
         const total = people
             .filter((p) => p.isParticipating)
             .reduce((sum, person) => sum + parseFloat(person.paid || "0"), 0);
         setTotalPaid(total);
         // Add activity check to validation
         setIsValid(
-            total === parseFloat(totalAmount || "0") &&
-            total > 0 &&
-            activity.trim() !== ""
+            total === parseFloat(totalAmount || "0") && total > 0 && activity.trim() !== "" && (totalPercentage <= 100 || !percentage)
         );
     }, [people, totalAmount, activity]); // Add activity to dependencies
 
@@ -127,77 +156,160 @@ function SplitOverlay({ isOpen, onClose, onApply }: SplitOverlayProps) {
                         className="input"
                     />
                 </div>
+                <div className="checkbox-group">
+                    <label className="checkbox-label">
+                        <input
+                            type="checkbox"
+                            checked={divideEqually}
+                            onChange={(e) => {
+                                setDivideEqually(e.target.checked);
+                                if (percentage)
+                                    setPercentage(!e.target.checked);
+                            }}
+                        />
+                        Divide Equally
+                    </label>
 
-                <label className="checkbox-label">
-                    <input
-                        type="checkbox"
-                        checked={divideEqually}
-                        onChange={(e) => setDivideEqually(e.target.checked)}
-                    />
-                    Divide Equally
-                </label>
-
+                    <label className="checkbox-label">
+                        <input
+                            type="checkbox"
+                            checked={percentage}
+                            onChange={(e) => {
+                                setPercentage(e.target.checked);
+                                if (divideEqually)
+                                    setDivideEqually(!e.target.checked);
+                            }}
+                        />
+                        Percentage
+                    </label>
+                </div>
                 <table className="split-table">
                     <thead>
                         <tr>
                             <th>Name</th>
                             <th>Paid</th>
                             <th>Should Pay</th>
+                            <th>%</th>
                             <th>Overpaid/Not paid</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {people.filter((p) => p).map((person, index) => (
-                            <tr key={index}>
-                                <td className="check-name"><input
-                                    type="checkbox"
-                                    checked={person.isParticipating}
-                                    onChange={(e) =>
-                                        handleParticipantChange(index, e.target.checked)
-                                    } />{person.name}</td>
-                                <td>
-                                    <input
-                                        type="number"
-                                        value={person.paid}
-                                        onChange={(e) => {
-                                            const newPeople = [...people];
-                                            const personIndex = people.findIndex(
-                                                (p) => p.name === person.name
-                                            );
-                                            newPeople[personIndex].paid = e.target.value;
-                                            setPeople(newPeople);
-                                        }}
-                                        disabled={!person.isParticipating}
-                                        className="input"
-                                    />
-                                </td>
-                                <td>
-                                    <input
-                                        type="number"
-                                        value={person.shouldPay}
-                                        onChange={(e) => {
-                                            if (!divideEqually) {
-                                                const newPeople = [...people];
-                                                const personIndex = people.findIndex(
-                                                    (p) => p.name === person.name
-                                                );
-                                                newPeople[personIndex].shouldPay = e.target.value;
-                                                setPeople(newPeople);
+                        {people
+                            .filter((p) => p)
+                            .map((person, index) => (
+                                <tr key={index}>
+                                    <td className="checkbox-label">
+                                        <input
+                                            type="checkbox"
+                                            checked={person.isParticipating}
+                                            onChange={(e) =>
+                                                handleParticipantChange(
+                                                    index,
+                                                    e.target.checked
+                                                )
                                             }
-                                        }}
-                                        disabled={divideEqually}
-                                        className="input"
-                                    />
-                                </td>
-                                <td>
-                                    <p>{parseFloat(person.paid) - parseFloat(person.shouldPay)}</p>
-                                </td>
-                            </tr>
-                        ))}
+                                        />
+                                        {person.name}
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="number"
+                                            value={person.paid}
+                                            onChange={(e) => {
+                                                const newPeople = [...people];
+                                                const personIndex =
+                                                    people.findIndex(
+                                                        (p) =>
+                                                            p.name ===
+                                                            person.name
+                                                    );
+                                                newPeople[personIndex].paid =
+                                                    e.target.value;
+                                                setPeople(newPeople);
+                                            }}
+                                            disabled={!person.isParticipating}
+                                            className="input"
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="number"
+                                            value={person.shouldPay}
+                                            onChange={(e) => {
+                                                if (!divideEqually) {
+                                                    const newPeople = [
+                                                        ...people,
+                                                    ];
+                                                    const personIndex =
+                                                        people.findIndex(
+                                                            (p) =>
+                                                                p.name ===
+                                                                person.name
+                                                        );
+                                                    newPeople[
+                                                        personIndex
+                                                    ].shouldPay =
+                                                        e.target.value;
+                                                    setPeople(newPeople);
+                                                }
+                                            }}
+                                            disabled={
+                                                divideEqually ||
+                                                !person.isParticipating ||
+                                                percentage
+                                            }
+                                            className="input"
+                                            max={parseFloat(totalAmount) || 0}
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="number"
+                                            value={person.percentage}
+                                            onChange={(e) => {
+                                                if (percentage) {
+                                                    const newPeople = [...people];
+                                                    const personIndex = people.findIndex(
+                                                        (p) => p.name === person.name
+                                                    );
+                                                    newPeople[personIndex].percentage = e.target.value;
+
+                                                    // Calculate new total percentage
+                                                    const newTotal = newPeople
+                                                        .filter(p => p.isParticipating)
+                                                        .reduce((sum, p) => sum + parseFloat(p.percentage || "0"), 0);
+                                                    setTotalPercentage(newTotal);
+
+                                                    // Update shouldPay based on percentage
+                                                    newPeople[personIndex].shouldPay = person.isParticipating
+                                                        ? ((parseFloat(totalAmount) * parseFloat(e.target.value)) / 100).toFixed(2)
+                                                        : "0";
+
+                                                    setPeople(newPeople);
+                                                }
+                                            }}
+                                            disabled={!percentage || !person.isParticipating}
+                                            className="input"
+                                            max={100}
+                                        />
+                                    </td>
+                                    <td>
+                                        <p>
+                                            {person.isParticipating
+                                                ? `${((person.paid ? parseFloat(person.paid) : 0) - parseFloat(person.shouldPay)).toFixed(2)} ${(person.paid ? parseFloat(person.paid) : 0) - parseFloat(person.shouldPay) > 0
+                                                    ? "(Overpaid)"
+                                                    : (person.paid ? parseFloat(person.paid) : 0) - parseFloat(person.shouldPay) < 0? "(Not paid enough)" : "Ok"
+                                                }`
+                                                : ""}
+                                        </p>
+                                    </td>
+                                </tr>
+                            ))}
                         <tr className="total-row">
                             <td>Total</td>
                             <td>${totalPaid.toFixed(2)}</td>
                             <td>${totalAmount || "0"}</td>
+                            {percentage && <td>{totalPercentage}%</td>}
                         </tr>
                     </tbody>
                 </table>
@@ -220,4 +332,3 @@ function SplitOverlay({ isOpen, onClose, onApply }: SplitOverlayProps) {
 }
 
 export default SplitOverlay;
-
