@@ -4,6 +4,5 @@ server/venv
 client/node_modules/
 .idea/
 server/db/test.sqlite
-
-
+.pytest_cache
 client/.vite/
