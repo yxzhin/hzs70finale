@@ -11,11 +11,7 @@ function Header () {
     if (token) {
         text = "Log Out";
         link = "/logout";
-        ComponentOnTheRight = 
-        <select>
-            <option value="Room livers">Room livers</option>
-            <option value="new-group">+ New group</option>
-        </select>
+        ComponentOnTheRight = <a href="/dashboard" className='link header-info-link'>Dashboard</a>;
     }
 
     const handleClick = (path: string) => {
