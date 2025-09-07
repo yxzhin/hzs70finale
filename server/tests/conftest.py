@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pytest
 import os
 import json
@@ -70,3 +71,24 @@ def get_auth_token(test_client, clean_tables):
     user_id = data["user"]["id"]
 
     return token, user_id
+
+
+def create_group_and_get_id(db_session, user_id):
+    """
+    Создаёт новую группу в базе данных и возвращает её ID.
+
+    :param db_session: Фикстура сессии базы данных pytest.
+    :param user_id: ID пользователя, который будет добавлен в группу.
+    :return: ID созданной группы.
+    """
+    # Исправление: Сначала находим объект пользователя по его ID
+    user = db_session.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise ValueError(f"User with ID {user_id} not found.")
+
+    # Создаём новую группу, добавляя найденный объект пользователя
+    # Обязательно указываем владельца группы (owner)
+    group = Group(name="test group", users=[user], owner=user)
+    db_session.add(group)
+    db_session.commit()
+    return group.id
