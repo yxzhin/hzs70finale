@@ -30,10 +30,9 @@ function SplitOverlay({ groupId, isOpen, onClose, onApply, token }: SplitOverlay
         })
         .then(async (res) => {
             const data = await res.json();
-
             setUsers(data.users);
-        })
-    });
+        });
+    }, [groupId]);
 
     let peopleList: Person[] = [];
 
