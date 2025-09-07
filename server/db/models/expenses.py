@@ -17,7 +17,7 @@ class Expense(SqlAlchemyBase):
     split_type = Column(String(20), nullable=False)
     payment_method = Column(String(20), nullable=False)
     periodicity = Column(Integer, nullable=True)
-    next_payment_date = Column(DateTime, nullable=False)
+    next_payment_date = Column(DateTime, nullable=True)
     creation_date = Column(DateTime, nullable=False, default=datetime.now(timezone.utc))
     is_paid = Column(Boolean, nullable=False)
 
