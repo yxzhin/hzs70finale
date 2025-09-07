@@ -179,68 +179,73 @@ function Dashboard() {
                         </a>
                     </div>
                 </div>
-                <div className="table-section table-section-split">
-                    <div className="they-owe">
-                        <h2 className="table-title">
-                            They Owe You {theyOweValue}
-                        </h2>
-                        <div className="debt-list">
-                            <DebtItem
-                                person="John Doe"
-                                reason="Pizza"
-                                amount="$15.00"
-                                status="theyOwe"
-                            />
-                            <DebtItem
-                                person="Alice Smith"
-                                reason="Movie tickets"
-                                amount="$25.00"
-                                status="theyOwe"
-                            />
+                {groupUsers.length > 1 ? <div className="info">
+                    <div className="table-section table-section-split">
+                        <div className="they-owe">
+                            <h2 className="table-title">
+                                They Owe You {theyOweValue}
+                            </h2>
+                            <div className="debt-list">
+                                <DebtItem
+                                    person="John Doe"
+                                    reason="Pizza"
+                                    amount="$15.00"
+                                    status="theyOwe"
+                                />
+                                <DebtItem
+                                    person="Alice Smith"
+                                    reason="Movie tickets"
+                                    amount="$25.00"
+                                    status="theyOwe"
+                                />
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="you-owe">
-                        <h2 className="table-title">
-                            You Owe Them {youOweValue}
-                        </h2>
-                        <div className="debt-list">
-                            <DebtItem
-                                person="Bob Johnson"
-                                reason="Lunch"
-                                amount="$12.50"
-                                status="youOwe"
-                            />
-                            <DebtItem
-                                person="Sarah Wilson"
-                                reason="Coffee"
-                                amount="$5.00"
-                                status="youOwe"
-                            />
+                        <div className="you-owe">
+                            <h2 className="table-title">
+                                You Owe Them {youOweValue}
+                            </h2>
+                            <div className="debt-list">
+                                <DebtItem
+                                    person="Bob Johnson"
+                                    reason="Lunch"
+                                    amount="$12.50"
+                                    status="youOwe"
+                                />
+                                <DebtItem
+                                    person="Sarah Wilson"
+                                    reason="Coffee"
+                                    amount="$5.00"
+                                    status="youOwe"
+                                />
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className="table-section">
-                    <div className="history">
-                        <h2 className="table-title">
-                            Group history: spent {historyValue} together
-                        </h2>
-                        <div className="debt-list">
-                            <DebtItem
-                                person="John Doe"
-                                reason="Pizza"
-                                amount="$15.00"
-                                status="history"
-                            />
-                            <DebtItem
-                                person="Alice Smith"
-                                reason="Movie tickets"
-                                amount="$25.00"
-                                status="history"
-                            />
+                    <div className="table-section">
+                        <div className="history">
+                            <h2 className="table-title">
+                                Group history: spent {historyValue} together
+                            </h2>
+                            <div className="debt-list">
+                                <DebtItem
+                                    person="John Doe"
+                                    reason="Pizza"
+                                    amount="$15.00"
+                                    status="history"
+                                />
+                                <DebtItem
+                                    person="Alice Smith"
+                                    reason="Movie tickets"
+                                    amount="$25.00"
+                                    status="history"
+                                />
+                            </div>
                         </div>
                     </div>
-                </div>
+                </div> : <div className="info">
+                        <h1>To manage debts and spendings, add another person to the group!</h1>
+                    </div>}
+                
             </div> : /*<Navigate to="/create_group" replace />*/ <h1>no</h1>}
             <SplitOverlay
                 isOpen={isOverlayOpen}
