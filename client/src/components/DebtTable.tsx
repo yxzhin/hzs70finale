@@ -21,10 +21,12 @@ const DebtTable = ({
     onResolve,
 }: DebtTableProps) => {
     const [selectedCategory, setSelectedCategory] = useState("All");
+
     const filteredDebts = debts.filter(
         (debt) =>
             selectedCategory === "All" || debt.category === selectedCategory
     );
+
     return (
         <div className={status === "history" ? "history" : "debt-table"}>
             <div className="table-header">
@@ -42,9 +44,11 @@ const DebtTable = ({
                     ))}
                 </select>
             </div>
+
             <div className="debt-list">
                 {filteredDebts.map((debt) => (
                     <DebtItem
+                        key={(debt as any).id || JSON.stringify(debt)} // <--- ВОТ ЗДЕСЬ
                         {...(status === "history"
                             ? {
                                   reason: debt.reason,

@@ -27,8 +27,8 @@ class Expense(SqlAlchemyBase):
     payments = relationship("Payment", back_populates="expense")
     debts = relationship("Debt", back_populates="expense")
 
-    def to_dict(self):
-        return {
+    def to_dict(self, category_req=False):
+        output = {
             "id": self.id,
             "group_id": self.group_id,
             "category_id": self.category_id,
@@ -39,7 +39,12 @@ class Expense(SqlAlchemyBase):
             "split_type": self.split_type,
             "payment_method": self.payment_method,
             "periodicity": self.periodicity,
-            "next_payment_date": self.next_payment_date,
-            "creation_date": self.creation_date,
+            "next_payment_date": self.next_payment_date.isoformat() if self.next_payment_date else None,
+            "creation_date": self.creation_date.isoformat(),
             "is_paid": self.is_paid,
         }
+
+        if category_req:
+            output["category"] = self.category.to_dict() if self.category else None
+
+        return output

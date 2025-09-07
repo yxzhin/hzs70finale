@@ -235,7 +235,7 @@ class ExpenseHistoryResource(Resource):
             expenses = (
                 query.offset((page - 1) * items_per_page).limit(items_per_page).all()
             )
-            items = [item.to_dict() for item in expenses]
+            items = [item.to_dict(category_req=True) for item in expenses]
 
             return {
                 "page": page,
@@ -246,6 +246,7 @@ class ExpenseHistoryResource(Resource):
             }, 200
 
         except Exception as e:
+            print("ERRPR", e)
             return {"message": f"An error occurred: {str(e)}"}, 500
         finally:
             db_sess.close()

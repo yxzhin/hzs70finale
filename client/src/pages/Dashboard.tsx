@@ -157,6 +157,35 @@ function Dashboard() {
         setGroupId(groupsData[0]['id']) 
     }
 
+    const fetchExpenseHistory = async (userId: string, groupId: number, page = 1, itemsPerPage = 10) => {
+        try {
+            const res = await fetch(`http://localhost:5000/expense/history`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    group_id: groupId,
+                    items_per_page: itemsPerPage,
+                    page: page,
+                    // filter_is_paid можно добавить при необходимости
+                })
+            });
+
+            if (res.status !== 200) {
+                console.error('Failed to fetch expense history:', res.status);
+                return [];
+            }
+
+            const data = await res.json();
+            return data.expenses || [];
+        } catch (error) {
+            console.error('Error fetching expense history:', error);
+            return [];
+        }
+    };
+
     useEffect(() => {
         if (groupsData.length > 0) {
             const firstGroup = groupsData[0];
@@ -213,7 +242,17 @@ function Dashboard() {
         })
     }
 
-    const userId = localStorage.getItem('userid');  
+    const userId = localStorage.getItem('userid');
+
+    useEffect(() => {
+        if (groupId !== -1 && userId) {
+            fetchExpenseHistory(userId, groupId).then(expenses => {
+                console.log("Fetched expense history:", expenses); // ← вот это добавлено
+                setHistory(expenses);
+            });
+        }
+    }, [groupId, userId]);
+
     if (!noGroups) {
         return (
         <div className="dashboard">
