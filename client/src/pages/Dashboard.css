@@ -78,6 +78,10 @@
     align-items: center;
 }
 
+.dashboard-upper {
+    display: flex;
+}
+
 @media (max-width: 1150px) {
     .dashboard-content {
         width: 90%;
