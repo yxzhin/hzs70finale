@@ -1,8 +1,26 @@
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import './Invite.css';
 
 function Invite() {
+    const navigate = useNavigate();
+
     const groupId = Number(new URLSearchParams(window.location.search).get('id')) || 0;
-    const groupName = "Example Group";
+    const [groupName, setGroupName] = useState('');
+
+    useEffect(() => {
+        fetch(`http://localhost:5000/groups/${groupId}`, {
+            method: 'GET'
+        }).then(async (res) => {
+            if (res.status !== 200) {
+                navigate('/', { replace: true });
+                return;
+            }
+            const data = await res.json();
+            setGroupName(data.name);
+        })
+    });
 
     const inviteLink = `${window.location.origin}/join?group=${groupId}`;
 
