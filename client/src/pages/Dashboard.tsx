@@ -241,7 +241,7 @@ function Dashboard() {
                         </div>
                     </div>
                 </div>
-            </div> : <Navigate to="/create_group" replace />}
+            </div> : /*<Navigate to="/create_group" replace />*/ <h1>no</h1>}
             <SplitOverlay
                 isOpen={isOverlayOpen}
                 onClose={() => setIsOverlayOpen(false)}
@@ -255,7 +255,7 @@ function Dashboard() {
     );
 }
 
-    return <h1>You have no groups!</h1>
+    return <Navigate to='/create_group' />
 }
 
 export default Dashboard;
