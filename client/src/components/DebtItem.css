@@ -14,12 +14,12 @@
     gap: 0.5rem;
 }
 
-.debt-person {
+.debt-primary {
     color: var(--white);
     font-weight: 600;
 }
 
-.debt-reason {
+.debt-secondary {
     color: var(--grey);
     font-style: italic;
 }
@@ -51,4 +51,10 @@
     .debt-person {
         font-size: 10pt;
     }
+}
+
+.checkmark {
+    color: var(--primary);
+    font-size: 20pt;
+    font-weight: bold;
 }

@@ -1,6 +1,14 @@
-import "./Dashboard.css";
-import DebtItem from "../components/DebtItem";
+//React
+import { useState } from "react";
+//Components
+import DebtTable from "../components/DebtTable";
 import SplitOverlay from "../components/SplitOverlay";
+//Types
+import type { Person } from "../types/interfaces";
+import type { HistoryActivity } from "../types/interfaces";
+//Styles
+import "./Dashboard.css";
+/*------------------------------------------------------------------------*/
 import { useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 
@@ -120,6 +128,23 @@ function Dashboard() {
             getUsersInGroup(group!);
     }
 
+    const groupId = 123;
+    // Replace these with actual data fetching logic
+    const theyOweList = [
+        { person: "John Doe", reason: "Pizza", amount: "$15.00", category: "Food", resolved: false },
+        { person: "Alice Smith", reason: "Movie tickets", amount: "$25.00", category: "Entertainment", resolved: false  },
+    ];
+    const youOweList = [
+        { person: "Bob Johnson", reason: "Lunch", amount: "$12.50", category: "Food", resolved: false  },
+        { person: "Sarah Wilson", reason: "Coffee", amount: "$5.00", category: "Food", resolved: false  },
+    ];
+    const historyList = [
+        { reason: "Pizza", amount: "$15.00", category: "Food" },
+        { reason: "Movie tickets", amount: "$25.00", category: "Entertainment" },
+    ];
+    const [theyOwe, setTheyOwe] = useState<Person[]>(theyOweList);
+    const [youOwe, setYouOwe] = useState<Person[]>(youOweList);
+    const [history, setHistory] = useState<HistoryActivity[]>(historyList);
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
     let theyOweValue = "$40.00";
     let youOweValue = "$17.50";
@@ -139,6 +164,29 @@ function Dashboard() {
 
     if (!noGroups) {
         return (
+    const youOweValue = youOweList.reduce((total, currentItem) => { const amount = parseFloat(currentItem.amount.replace('$', '')); return total + amount; }, 0);
+    const historyValue = historyList.reduce((total, currentItem) => { const amount = parseFloat(currentItem.amount.replace('$', '')); return total + amount; }, 0)
+    const theyOweValue = theyOweList.reduce((total, currentItem) => { const amount = parseFloat(currentItem.amount.replace('$', '')); return total + amount; }, 0);
+    // Here we should add the logic for removing one's debt from the server
+    const handleDebtResolution = (person: string, reason: string, amount: string) => {
+        if (theyOwe.some(debt => debt.person === person)) {
+            setTheyOwe(prev => prev.map(debt => 
+                debt.person === person ? { ...debt, resolved: true } : debt
+            ));
+        } else {
+            setYouOwe(prev => prev.map(debt => 
+                debt.person === person ? { ...debt, resolved: true } : debt
+            ));
+        }
+        // Here you would send the resolution to the server
+        // Example:
+        // await fetch('/api/resolve-debt', { 
+        //     method: 'POST', 
+        //     body: JSON.stringify({ person, reason, amount }) 
+        // });
+    };
+    const userId = localStorage.getItem('userid');
+    return (
         <div className="dashboard">
             {groupId !== -1 ? 
             <div className="dashboard-content">
@@ -180,66 +228,28 @@ function Dashboard() {
                     </div>
                 </div>
                 <div className="table-section table-section-split">
-                    <div className="they-owe">
-                        <h2 className="table-title">
-                            They Owe You {theyOweValue}
-                        </h2>
-                        <div className="debt-list">
-                            <DebtItem
-                                person="John Doe"
-                                reason="Pizza"
-                                amount="$15.00"
-                                status="theyOwe"
-                            />
-                            <DebtItem
-                                person="Alice Smith"
-                                reason="Movie tickets"
-                                amount="$25.00"
-                                status="theyOwe"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="you-owe">
-                        <h2 className="table-title">
-                            You Owe Them {youOweValue}
-                        </h2>
-                        <div className="debt-list">
-                            <DebtItem
-                                person="Bob Johnson"
-                                reason="Lunch"
-                                amount="$12.50"
-                                status="youOwe"
-                            />
-                            <DebtItem
-                                person="Sarah Wilson"
-                                reason="Coffee"
-                                amount="$5.00"
-                                status="youOwe"
-                            />
-                        </div>
-                    </div>
+                    <DebtTable
+                        title="They Owe You"
+                        value={theyOweValue}
+                        debts={theyOwe}
+                        status="theyOwe"
+                        onResolve={handleDebtResolution}
+                    />
+                    <DebtTable
+                        title="You Owe Them"
+                        value={youOweValue}
+                        debts={youOwe}
+                        status="youOwe"
+                        onResolve={handleDebtResolution}
+                    />
                 </div>
                 <div className="table-section">
-                    <div className="history">
-                        <h2 className="table-title">
-                            Group history: spent {historyValue} together
-                        </h2>
-                        <div className="debt-list">
-                            <DebtItem
-                                person="John Doe"
-                                reason="Pizza"
-                                amount="$15.00"
-                                status="history"
-                            />
-                            <DebtItem
-                                person="Alice Smith"
-                                reason="Movie tickets"
-                                amount="$25.00"
-                                status="history"
-                            />
-                        </div>
-                    </div>
+                    <DebtTable
+                        title="Group history: spent"
+                        value={historyValue}
+                        debts={history}
+                        status="history"
+                    />
                 </div>
             </div> : /*<Navigate to="/create_group" replace />*/ <h1>no</h1>}
             <SplitOverlay
