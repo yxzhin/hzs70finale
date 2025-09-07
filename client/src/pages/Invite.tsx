@@ -6,6 +6,8 @@ import './Invite.css';
 function Invite() {
     const navigate = useNavigate();
 
+    const navigate = useNavigate();
+
     const groupId = Number(new URLSearchParams(window.location.search).get('id')) || 0;
     const [groupName, setGroupName] = useState('');
 
@@ -25,6 +27,23 @@ function Invite() {
     const inviteLink = `${window.location.origin}/join?group=${groupId}`;
 
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(inviteLink)}&size=200x200`;
+
+    useEffect(() => {
+        fetch(`http://localhost:5000/groups/${groupId}`, {
+            method: 'GET'
+        })
+        .then(async (res) => {
+            const data = await res.json();
+
+            if (res.status !== 200) {
+                console.error(`Unknown status: ${res.status}`);
+                navigate('/', { replace: true });
+                return;
+            }
+
+            setGroupName(data.name);
+        })
+    })
 
     return (
         <div className="invite-page">

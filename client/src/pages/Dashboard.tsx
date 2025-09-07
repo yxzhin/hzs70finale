@@ -154,6 +154,13 @@ function Dashboard() {
     }
 
     useEffect(() => {
+        if (groupsData.length > 0) {
+            setGroupId(groupsData[0]['id']);
+            setCurrentGroup(groupsData[0]);
+            getUsersInGroup(groupsData[0]);
+        }
+    }, [groupsData]);
+
     if (groupsData.length > 0) {
         setGroupId(groupsData[0]['id']);
         setCurrentGroup(groupsData[0]);

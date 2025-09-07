@@ -90,6 +90,12 @@
     height: 40px;
 }
 
+.info h1 {
+    color: var(--white);
+    text-align: center;
+    margin-top: 50px;
+}
+
 @media (max-width: 1150px) {
     .dashboard-content {
         width: 90%;
