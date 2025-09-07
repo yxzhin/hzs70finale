@@ -84,7 +84,6 @@ function SplitOverlay({ groupId, isOpen, onClose, onApply, token }: SplitOverlay
 
     const handleApply = () => {
         onApply(people);
-        resetOverlay();
 
         fetch(`http://localhost:5000/expense/`, {
             method: 'POST',

@@ -47,9 +47,16 @@ class ExpenseCreationResource(Resource):
 
             # 1. Validation of required fields
             required_fields = [
-                "group_id", "title", "amount", "currency",
-                "expense_type", "split_type", "payment_method",
-                "next_payment_date", "is_paid", "participants"
+                "group_id",
+                "title",
+                "amount",
+                "currency",
+                "expense_type",
+                "split_type",
+                "payment_method",
+                "next_payment_date",
+                "is_paid",
+                "participants",
             ]
             for field in required_fields:
                 if field not in data:
@@ -58,7 +65,11 @@ class ExpenseCreationResource(Resource):
             group_id = data["group_id"]
 
             # ✅ Проверка, состоит ли пользователь в группе
-            user_in_group = db_sess.query(UserGroup).filter_by(user_id=user_id, group_id=group_id).first()
+            user_in_group = (
+                db_sess.query(UserGroup)
+                .filter_by(user_id=user_id, group_id=group_id)
+                .first()
+            )
             if not user_in_group:
                 return {"message": "User is not a member of this group"}, 403
 
@@ -70,7 +81,9 @@ class ExpenseCreationResource(Resource):
 
             if is_paid:
                 if not payments:
-                    return {"message": "Expense is marked as paid, but no payments were provided"}, 400
+                    return {
+                        "message": "Expense is marked as paid, but no payments were provided"
+                    }, 400
                 if total_payment_amount != data["amount"]:
                     return {
                         "message": f"Total payments ({total_payment_amount}) do not match the expense amount ({data['amount']})"
@@ -86,7 +99,9 @@ class ExpenseCreationResource(Resource):
                 split_type=data["split_type"],
                 payment_method=data["payment_method"],
                 periodicity=data.get("periodicity"),
-                next_payment_date=datetime.fromisoformat(data["next_payment_date"]),  # 🔥 Исправлено здесь
+                next_payment_date=datetime.fromisoformat(data["next_payment_date"])
+                if data["next_payment_date"]
+                else None,  # 🔥 Исправлено здесь
                 is_paid=data["is_paid"],
             )
 
@@ -100,7 +115,7 @@ class ExpenseCreationResource(Resource):
                     user_id=p["user_id"],
                     amount=p["amount"],
                     percentage=p.get("percentage"),
-                    is_paid=False
+                    is_paid=False,
                 )
                 db_sess.add(participant)
 
@@ -110,9 +125,7 @@ class ExpenseCreationResource(Resource):
                 payer_id = pay["payer_id"]
                 amount = pay["amount"]
                 payment = Payment(
-                    expense_id=expense.id,
-                    payer_id=payer_id,
-                    amount=amount
+                    expense_id=expense.id, payer_id=payer_id, amount=amount
                 )
                 db_sess.add(payment)
                 total_paid_by[payer_id] = total_paid_by.get(payer_id, 0) + amount
@@ -133,7 +146,8 @@ class ExpenseCreationResource(Resource):
                         continue  # already settled
 
                     creditors = [
-                        (cid, amt) for cid, amt in total_paid_by.items()
+                        (cid, amt)
+                        for cid, amt in total_paid_by.items()
                         if cid != debtor_id and amt > 0
                     ]
                     for creditor_id, available in creditors:
@@ -141,19 +155,24 @@ class ExpenseCreationResource(Resource):
                             break
 
                         debt_amount = min(available, net)
-                        db_sess.add(Debt(
-                            debtor_id=debtor_id,
-                            creditor_id=creditor_id,
-                            amount=debt_amount,
-                            expense_id=expense.id,
-                            is_paid=False
-                        ))
+                        db_sess.add(
+                            Debt(
+                                debtor_id=debtor_id,
+                                creditor_id=creditor_id,
+                                amount=debt_amount,
+                                expense_id=expense.id,
+                                is_paid=False,
+                            )
+                        )
 
                         total_paid_by[creditor_id] -= debt_amount
                         net -= debt_amount
 
             db_sess.commit()
-            return {"message": "Expense added successfully", "expense_id": expense.id}, 201
+            return {
+                "message": "Expense added successfully",
+                "expense_id": expense.id,
+            }, 201
 
         except Exception as e:
             db_sess.rollback()

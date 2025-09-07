@@ -10,16 +10,16 @@ class Expense(SqlAlchemyBase):
     id = Column(Integer, primary_key=True)
     group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)
     category_id = Column(Integer, ForeignKey("expense_categories.id"), nullable=True)
-    title = Column(String(100), nullable=False)
-    amount = Column(Integer, nullable=False)
-    currency = Column(String(3), nullable=False)
-    expense_type = Column(String(20), nullable=False)
-    split_type = Column(String(20), nullable=False)
-    payment_method = Column(String(20), nullable=False)
+    title = Column(String(100), nullable=True)
+    amount = Column(Integer, nullable=True)
+    currency = Column(String(3), nullable=True)
+    expense_type = Column(String(20), nullable=True)
+    split_type = Column(String(20), nullable=True)
+    payment_method = Column(String(20), nullable=True)
     periodicity = Column(Integer, nullable=True)
-    next_payment_date = Column(DateTime, nullable=False)
-    creation_date = Column(DateTime, nullable=False, default=datetime.now(timezone.utc))
-    is_paid = Column(Boolean, nullable=False)
+    next_payment_date = Column(DateTime, nullable=True)
+    creation_date = Column(DateTime, nullable=True, default=datetime.now(timezone.utc))
+    is_paid = Column(Boolean, nullable=True)
 
     group = relationship("Group")
     category = relationship("ExpenseCategory")
@@ -39,7 +39,7 @@ class Expense(SqlAlchemyBase):
             "split_type": self.split_type,
             "payment_method": self.payment_method,
             "periodicity": self.periodicity,
-            "next_payment_date": self.next_payment_date.isoformat(),
-            "creation_date": self.creation_date.isoformat(),
+            "next_payment_date": self.next_payment_date,
+            "creation_date": self.creation_date,
             "is_paid": self.is_paid,
         }
