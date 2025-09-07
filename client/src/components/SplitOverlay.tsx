@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "./SplitOverlay.css";
+import { categories } from "../constants/categories";
 
 interface Person {
     name: string;
@@ -157,6 +158,16 @@ function SplitOverlay({ isOpen, onClose, onApply }: SplitOverlayProps) {
                             className="input"
                             min="0"
                         />
+                        <select className="input">
+                            {categories.slice(1).map((category) => (
+                                <option
+                                    key={category}
+                                    value={category}
+                                >
+                                    {category}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                     <div className="checkbox-group">
                         <label className="checkbox-label">
@@ -304,7 +315,7 @@ function SplitOverlay({ isOpen, onClose, onApply }: SplitOverlayProps) {
                                                 ? `${((person.paid ? parseFloat(person.paid) : 0) - (person.shouldPay ? parseFloat(person.shouldPay) : 0)).toFixed(2)} ${(person.paid ? parseFloat(person.paid) : 0) - parseFloat(person.shouldPay) > 0
                                                     ? "(Overpaid)"
                                                     : (person.paid ? parseFloat(person.paid) : 0) - parseFloat(person.shouldPay) < 0 ? "(Not paid enough)" : "Ok"
-                                            }`
+                                                }`
                                                 : ""}
                                         </p>
                                     </td>

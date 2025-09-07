@@ -1,0 +1,13 @@
+.debt-table, .history {
+    background-color: var(--darker);
+    padding: 1.5rem;
+    border-radius: 10px;
+    width: 100%;
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
