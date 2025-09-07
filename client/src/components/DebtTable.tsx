@@ -53,6 +53,7 @@ const DebtTable = ({ title, value, debts, status, onResolve }: DebtTableProps) =
                   amount: debt.amount,
                   status: status,
                   category: debt.category,
+                  resolved: (debt as Person).resolved,
                   onResolve: onResolve
                 }
             )}

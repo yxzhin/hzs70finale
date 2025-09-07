@@ -7,16 +7,15 @@ interface DebtItemProps {
   amount: string;
   category: string;
   status?: "youOwe" | "history" | "theyOwe";
+  resolved?: boolean;
   onResolve?: (person: string, reason: string, amount: string) => void;
 }
 
 const DebtItem = (props: DebtItemProps) => {
-  const { person, reason, amount, category, status, onResolve } = props;
-  const [resolved, setResolved] = useState(false);
-
+  const { person, reason, amount, category, status, resolved, onResolve } = props;
   const handleResolve = () => {
     if (onResolve && person) {
-      setResolved(true);
+      onResolve(person, reason, amount);
     }
   }
   // The card for the "History" section
