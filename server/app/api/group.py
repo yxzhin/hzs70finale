@@ -40,8 +40,8 @@ class GroupResource(Resource):
             group_name: str = data.get("name")
             user_ids: list[int] = data.get("users")
 
-            if not group_name or not user_ids or len(user_ids) == 0:
-                return {"message": "group name and users are required"}, 400
+            if not group_name:
+                return {"message": "group name is required"}, 400
 
             existing = db_sess.query(Group).filter_by(name=group_name).first()
             if existing:
@@ -51,14 +51,6 @@ class GroupResource(Resource):
             if not user_owner:
                 return {"message": "user not found"}, 404
 
-            users = [db_sess.get(User, user_id_) for user_id_ in user_ids]
-            for index, user_owner in enumerate(users):
-                id_ = user_ids[index]
-                if not user_owner:
-                    return {"message": rf"a user with an id of {id_} not found"}, 404
-                if user_ids.count(id_) > 1:
-                    return {"message": f"user with id {id_} is duplicated"}, 400
-
             group = Group(
                 name=group_name,
                 owner_id=user_id
@@ -66,15 +58,26 @@ class GroupResource(Resource):
             db_sess.add(group)
             db_sess.flush()
 
-            user_groups = [
-                UserGroup(
-                    user_id=user_id_,
-                    group_id=group.id,
-                )
-                for user_id_ in user_ids
-            ]
+            if user_ids:
+                users = [db_sess.get(User, user_id_) for user_id_ in user_ids]
 
-            db_sess.add_all(user_groups)
+                for index, user_owner in enumerate(users):
+                    id_ = user_ids[index]
+                    if not user_owner:
+                        return {"message": rf"a user with an id of {id_} not found"}, 404
+                    if user_ids.count(id_) > 1:
+                        return {"message": f"user with id {id_} is duplicated"}, 400
+
+                user_groups = [
+                    UserGroup(
+                        user_id=user_id_,
+                        group_id=group.id,
+                    )
+                    for user_id_ in user_ids
+                ]
+
+                db_sess.add_all(user_groups)
+
             db_sess.commit()
 
             return {"message": "group created", "group": group.to_dict()}, 201
