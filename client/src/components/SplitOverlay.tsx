@@ -3,6 +3,7 @@ import "./SplitOverlay.css";
 import { categories } from "../constants/categories";
 
 interface Person {
+    user_id: number,
     name: string;
     isParticipating: boolean;
     paid: string;
@@ -30,35 +31,38 @@ function SplitOverlay({ groupId, isOpen, onClose, onApply, token }: SplitOverlay
         })
         .then(async (res) => {
             const data = await res.json();
+            console.log(`Fetch users for group ${groupId}:`, data.message || data);
             setUsers(data.users);
+        })
+        .catch(err => {
+            console.error(`Error fetching users for group ${groupId}:`, err);
         });
     }, [groupId]);
 
-    let peopleList: Person[] = [];
-
-    users.forEach(user => {
-        peopleList.push({
-            name: user['username'],
-            isParticipating: false,
-            paid: "0",
-            shouldPay: "0",
-            percentage: "0",
-        });
-    });
 
     const [totalPercentage, setTotalPercentage] = useState(0);
     const [activity, setActivity] = useState("");
     const [totalAmount, setTotalAmount] = useState("");
     const [divideEqually, setDivideEqually] = useState(true);
     const [percentage, setPercentage] = useState(false);
-    const [people, setPeople] = useState<Person[]>(peopleList);
+    const [people, setPeople] = useState<Person[]>([]);
     const [totalPaid, setTotalPaid] = useState(0);
     const [isValid, setIsValid] = useState(false);
     const resetOverlay = () => {
         setActivity("");
         setTotalAmount("");
         setDivideEqually(true);
-        setPeople(peopleList);
+
+        const resetPeople: Person[] = users.map((user) => ({
+            user_id: user.id,
+            name: user.username,
+            isParticipating: false,
+            paid: "0",
+            shouldPay: "0",
+            percentage: "0"
+        }));
+
+        setPeople(resetPeople);
         setTotalPaid(0);
         setIsValid(false);
     };
@@ -72,7 +76,6 @@ function SplitOverlay({ groupId, isOpen, onClose, onApply, token }: SplitOverlay
         setPeople(newPeople);
     };
     const handleClose = () => {
-        resetOverlay();
         onClose();
     };
 
@@ -83,6 +86,17 @@ function SplitOverlay({ groupId, isOpen, onClose, onApply, token }: SplitOverlay
     }
 
     const handleApply = () => {
+        const participants = people
+            .filter((p) => p.isParticipating)
+            .map((p) => {
+                const user = users.find((u) => u.username === p.name);
+                return {
+                    user_id: p.user_id,
+                    amount: parseFloat(p.shouldPay),
+                    percentage: percentage ? parseFloat(p.percentage || "0") : null,
+                };
+            });
+
         onApply(people);
 
         fetch(`http://localhost:5000/expense/`, {
@@ -96,17 +110,31 @@ function SplitOverlay({ groupId, isOpen, onClose, onApply, token }: SplitOverlay
                 title: activity,
                 amount: Number(totalAmount),
                 currency: 'EUR',
-                split_type: (getSplitType(divideEqually, percentage)),
+                split_type: getSplitType(divideEqually, percentage),
                 payment_method: '',
                 is_paid: false,
-                participants: JSON.stringify(peopleList),
+                participants,
                 next_payment_date: null,
                 expense_type: ''
             })
         })
+        .then(async (res) => {
+            const data = await res.json();
+            console.log("Expense creation response:", data.message || data);
+        })
+        .catch((err) => {
+            console.error("Error creating expense:", err);
+        });
 
         onClose();
     };
+
+    useEffect(() => {
+        if (isOpen && users.length > 0) {
+            resetOverlay();
+        }
+    }, [users, isOpen]);
+
     useEffect(() => {
         if (divideEqually && totalAmount) {
             const participants = people.filter((p) => p.isParticipating).length;
