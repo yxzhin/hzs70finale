@@ -2,7 +2,7 @@ import "./Dashboard.css";
 import DebtItem from "../components/DebtItem";
 import SplitOverlay from "../components/SplitOverlay";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 interface GroupProps {
     id: number;
@@ -241,13 +241,7 @@ function Dashboard() {
                         </div>
                     </div>
                 </div>
-            </div> : <div className="select-groups">
-                <h1 className="select-title">Please select the group to manage:</h1>
-                <select id="group-select" onChange={handleChangeGroup}>
-                    {groupsData.map(x => <option key={x['id']} value={x['id']}>{x['name'] || x['id']}</option>)}
-                    <option value='create'>Create new group</option>
-                </select>
-            </div>}
+            </div> : <Navigate to="/create_group" replace />}
             <SplitOverlay
                 isOpen={isOverlayOpen}
                 onClose={() => setIsOverlayOpen(false)}
