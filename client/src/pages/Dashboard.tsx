@@ -2,7 +2,7 @@ import "./Dashboard.css";
 import DebtItem from "../components/DebtItem";
 import SplitOverlay from "../components/SplitOverlay";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 interface GroupProps {
     id: number;
@@ -106,7 +106,7 @@ function Dashboard() {
         const value = event.target.value;
 
         if (value === 'create') {
-            console.log('Create');
+            navigate('/create_group', { replace: true });
             return;
         }
 
@@ -125,7 +125,19 @@ function Dashboard() {
     let youOweValue = "$17.50";
     let historyValue = "$40.00";
 
-    if (!noGroups)
+    const defaultToFirstGroup = () => {
+        setGroupId(groupsData[0]['id'])
+    }
+
+    useEffect(() => {
+    if (groupsData.length > 0) {
+        setGroupId(groupsData[0]['id']);
+        setCurrentGroup(groupsData[0]);
+        getUsersInGroup(groupsData[0]);
+    }
+}, [groupsData]);
+
+    if (!noGroups) {
         return (
         <div className="dashboard">
             {groupId !== -1 ? 
@@ -229,13 +241,7 @@ function Dashboard() {
                         </div>
                     </div>
                 </div>
-            </div> : <div className="select-groups">
-                <h1 className="select-title">Please select the group to manage:</h1>
-                <select id="group-select" onChange={handleChangeGroup}>
-                    {groupsData.map(x => <option key={x['id']} value={x['id']}>{x['name'] || x['id']}</option>)}
-                    <option value='create'>Create new group</option>
-                </select>
-            </div>}
+            </div> : <Navigate to="/create_group" replace />}
             <SplitOverlay
                 isOpen={isOverlayOpen}
                 onClose={() => setIsOverlayOpen(false)}
@@ -247,6 +253,7 @@ function Dashboard() {
             />
         </div>
     );
+}
 
     return <h1>You have no groups!</h1>
 }

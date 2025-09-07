@@ -1,27 +1,25 @@
-import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
-interface SignUpData {
+interface GroupData {
     name: string;
-    password: string;
-    passwordConfirm: string;
 }
 
-function SignUpRequest() {
+function CreateGroupFunc() {
     const location = useLocation();
     const navigate = useNavigate();
-    const data = location.state as SignUpData;
+    const data = location.state as GroupData;
 
     const token = localStorage.getItem('jwt');
     useEffect(() => {
         if (!token) navigate('/', { replace: true });
     }, [token, navigate]);
 
-    const hasFetched = useRef(false);
+    const fetched = useRef(false);
 
     useEffect(() => {
-        if (hasFetched.current) return;
-        hasFetched.current = true;
+        if (fetched.current) return;
+        fetched.current = true;
         
         fetch("http://localhost:5000/user/current_user", {
             method: "GET",
@@ -47,22 +45,16 @@ function SignUpRequest() {
         });
     }, [token, navigate]);
 
-    const fetched = useRef(false);
-
+    const hasFetched = useRef(false);
     useEffect(() => {
-        if (fetched.current) return;
-        fetched.current = true;
-
-        if (!data?.name || !data?.password || !data?.passwordConfirm) {
-            navigate("/signup?error=empty", { replace: true });
+        if (hasFetched.current) return;
+        hasFetched.current = true;
+         
+        if (!data?.name) {
+            navigate("/create_group?error=empty", { replace: true });
             return;
         }
-
-        if (data.password !== data.passwordConfirm) {
-            navigate("/signup?error=pwdnomatch", { replace: true });
-            return;
-        }
-
+     
         fetch("http://localhost:5000/groups/", {
             method: "POST",
             headers: {
@@ -73,25 +65,16 @@ function SignUpRequest() {
                 name: data.name
             })
         })
-            .then(res => res.json())
-            .then(async (result) => {
-                if (result.status === 200) {
-                    navigate("/dashboard", { replace: true });
-                    return;
-                }
-                else {
-                    console.error(`Unexpected status: ${result.status}`);
-                    navigate("/dashboard", { replace: true });
-                    return;
-                }
-            })
-            .catch(err => {
-                console.error("Registration error:", err);
-                navigate("/dashboard?error=server", { replace: true });
-            });
+        .then(async (_) => {
+            navigate('/dashboard');
+        })
+        .catch(err => {
+            console.error("Registration error:", err);
+            navigate("/sign_up?error=server", { replace: true });
+        });
     }, [data, navigate]);
 
     return <p>Submitting your registration...</p>;
 }
 
-export default SignUpRequest;
+export default CreateGroupFunc;

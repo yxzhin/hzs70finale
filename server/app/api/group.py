@@ -58,6 +58,12 @@ class GroupResource(Resource):
             db_sess.add(group)
             db_sess.flush()
 
+            group_owner = UserGroup(
+                user_id=user_id,
+                group_id=group.id,
+            )
+            db_sess.add(group_owner)
+
             if user_ids:
                 users = [db_sess.get(User, user_id_) for user_id_ in user_ids]
 
@@ -163,3 +169,4 @@ class AllUserGroupsResource(Resource):
 
 api.add_resource(GroupResource, "/<int:group_id>", "/")
 api.add_resource(AllUserGroupsResource, "/all_user_groups")
+
