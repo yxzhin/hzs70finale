@@ -78,6 +78,18 @@
     align-items: center;
 }
 
+.dashboard-upper {
+    display: flex;
+    align-items: center;
+}
+
+#group-select {
+    margin-left: 30px;
+    padding: 0 10px;
+    border: 0px;
+    height: 40px;
+}
+
 @media (max-width: 1150px) {
     .dashboard-content {
         width: 90%;

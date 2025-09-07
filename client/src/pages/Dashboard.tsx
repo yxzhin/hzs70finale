@@ -134,16 +134,22 @@ function Dashboard() {
                     Welcome,<br/>
                     <span className="red-text">{username}</span>
                 </h1>
-                <h1 className="currently-managing-text">
-                    Welcome,
-                    <span className="red-text"> {username}</span>
-                </h1>
-                
+                <div className="dashboard-upper">
+                    <h1 className="currently-managing-text">
+                        Welcome,
+                        <span className="red-text"> {username}</span>
+                    </h1>
+                    <select id="group-select" onChange={handleChangeGroup}>
+                        {groupsData.map(x => <option key={x['id']} value={x['id']}>{x['name'] || x['id']}</option>)}
+                        <option value='create'>Create new group</option>
+                    </select>
+                </div>
                 <div className="dashboard-header">
                     <div className="dashboard-header-left">
                         <h1 className="dashboard-title">
                             Currently managing: <span className="red-text">{currentGroup!.name}</span>
                         </h1>
+                        
                         <div className="add-spending-section">
                             <h1 className="dashboard-title">Add a spending</h1>
                             <button
