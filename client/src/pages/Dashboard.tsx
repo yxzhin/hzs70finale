@@ -202,7 +202,18 @@ function Dashboard() {
         return JSON.stringify(participant);
     }
 
-    const userId = localStorage.getItem('userid');
+    const handleLeave = () => {
+        fetch(`http://localhost:5000/user_groups/${groupId}`, {
+            method: "DELETE",
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }).then(() => {
+            navigate('/');
+        })
+    }
+
+    const userId = localStorage.getItem('userid');  
     if (!noGroups) {
         return (
         <div className="dashboard">
@@ -239,7 +250,7 @@ function Dashboard() {
                         </div>
                     </div>
                     <div className="dashboard-header-right">
-                        <button className="primary-btn">Leave</button>
+                        <button className="primary-btn" onClick={handleLeave}>Leave</button>
                         <a href={`/invite?id=${groupId}`}>
                             <button className="primary-btn">Add Friend</button>
                         </a>
