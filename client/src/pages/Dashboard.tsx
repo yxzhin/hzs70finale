@@ -161,12 +161,14 @@ function Dashboard() {
         }
     }, [groupsData]);
 
-    if (groupsData.length > 0) {
-        setGroupId(groupsData[0]['id']);
-        setCurrentGroup(groupsData[0]);
-        getUsersInGroup(groupsData[0]);
-    }
-}, [groupsData]);
+    useEffect(() => {
+        if (groupsData.length > 0) {
+            setGroupId(groupsData[0]['id']);
+            setCurrentGroup(groupsData[0]);
+            getUsersInGroup(groupsData[0]);
+        }
+    }, [groupsData]);
+
     // Here we should add the logic for removing one's debt from the server
     const handleDebtResolution = (person: string, reason: string, amount: string) => {
         if (theyOwe.some(debt => debt.person === person)) {

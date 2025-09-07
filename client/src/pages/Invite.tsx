@@ -6,8 +6,6 @@ import './Invite.css';
 function Invite() {
     const navigate = useNavigate();
 
-    const navigate = useNavigate();
-
     const groupId = Number(new URLSearchParams(window.location.search).get('id')) || 0;
     const [groupName, setGroupName] = useState('');
 
