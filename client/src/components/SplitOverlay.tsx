@@ -11,43 +11,42 @@ interface Person {
 }
 
 interface SplitOverlayProps {
+    groupId: number;
     isOpen: boolean;
     onClose: () => void;
     onApply: (data: any) => void;
+    token: string;
 }
 
-function SplitOverlay({ isOpen, onClose, onApply }: SplitOverlayProps) {
-    // Sample people list, in a real app this would come from props or context
-    const peopleList = [
-        {
-            name: "John Doe",
+function SplitOverlay({ groupId, isOpen, onClose, onApply, token }: SplitOverlayProps) {
+    const [users, setUsers] = useState([]);
+
+    useEffect(() => {
+        fetch(`http://localhost:5000/groups/${groupId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(async (res) => {
+            const data = await res.json();
+
+            setUsers(data.users);
+        })
+    });
+
+    let peopleList: Person[] = [];
+
+    users.forEach(user => {
+        peopleList.push({
+            name: user['username'],
             isParticipating: false,
             paid: "0",
             shouldPay: "0",
             percentage: "0",
-        },
-        {
-            name: "Alice Smith",
-            isParticipating: false,
-            paid: "0",
-            shouldPay: "0",
-            percentage: "0",
-        },
-        {
-            name: "Bob Johnson",
-            isParticipating: false,
-            paid: "0",
-            shouldPay: "0",
-            percentage: "0",
-        },
-        {
-            name: "Sarah Wilson",
-            isParticipating: false,
-            paid: "0",
-            shouldPay: "0",
-            percentage: "0",
-        },
-    ];
+        });
+    });
+
     const [totalPercentage, setTotalPercentage] = useState(0);
     const [activity, setActivity] = useState("");
     const [totalAmount, setTotalAmount] = useState("");
@@ -77,9 +76,37 @@ function SplitOverlay({ isOpen, onClose, onApply }: SplitOverlayProps) {
         resetOverlay();
         onClose();
     };
+
+    function getSplitType(divideEqually: boolean, percentages: boolean) {
+        if (divideEqually) return "divideEqually";
+        if (percentages) return "percentages";
+        return "individual";
+    }
+
     const handleApply = () => {
         onApply(people);
         resetOverlay();
+
+        fetch(`http://localhost:5000/expense/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                group_id: groupId,
+                title: activity,
+                amount: Number(totalAmount),
+                currency: 'EUR',
+                split_type: (getSplitType(divideEqually, percentage)),
+                payment_method: '',
+                is_paid: false,
+                participants: JSON.stringify(peopleList),
+                next_payment_date: null,
+                expense_type: ''
+            })
+        })
+
         onClose();
     };
     useEffect(() => {

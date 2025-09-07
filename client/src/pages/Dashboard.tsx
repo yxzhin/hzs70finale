@@ -9,7 +9,7 @@ import type { HistoryActivity } from "../types/interfaces";
 //Styles
 import "./Dashboard.css";
 /*------------------------------------------------------------------------*/
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useFetcher, useNavigate } from "react-router-dom";
 
 interface GroupProps {
     id: number;
@@ -127,47 +127,48 @@ function Dashboard() {
             getUsersInGroup(group!);
     }
 
-    // Replace these with actual data fetching logic
-    const theyOweList = [
-        { person: "John Doe", reason: "Pizza", amount: "$15.00", category: "Food", resolved: false },
-        { person: "Alice Smith", reason: "Movie tickets", amount: "$25.00", category: "Entertainment", resolved: false  },
+    const theyOweList: [] = [
+
     ];
-    const youOweList = [
-        { person: "Bob Johnson", reason: "Lunch", amount: "$12.50", category: "Food", resolved: false  },
-        { person: "Sarah Wilson", reason: "Coffee", amount: "$5.00", category: "Food", resolved: false  },
+    const youOweList: [] = [
+
     ];
-    const historyList = [
-        { reason: "Pizza", amount: "$15.00", category: "Food" },
-        { reason: "Movie tickets", amount: "$25.00", category: "Entertainment" },
+    const historyList: [] = [
+
     ];
     const [theyOwe, setTheyOwe] = useState<Person[]>(theyOweList);
     const [youOwe, setYouOwe] = useState<Person[]>(youOweList);
     const [history, setHistory] = useState<HistoryActivity[]>(historyList);
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
 
+    const [data, setData] = useState([]);
+
     const youOweValue = youOweList.reduce((total, currentItem) => { const amount = parseFloat(currentItem.amount.replace('$', '')); return total + amount; }, 0);
     const historyValue = historyList.reduce((total, currentItem) => { const amount = parseFloat(currentItem.amount.replace('$', '')); return total + amount; }, 0)
     const theyOweValue = theyOweList.reduce((total, currentItem) => { const amount = parseFloat(currentItem.amount.replace('$', '')); return total + amount; }, 0);
 
     const defaultToFirstGroup = () => {
-        setGroupId(groupsData[0]['id'])
+        setGroupId(groupsData[0]['id']) 
     }
 
     useEffect(() => {
         if (groupsData.length > 0) {
-            setGroupId(groupsData[0]['id']);
-            setCurrentGroup(groupsData[0]);
-            getUsersInGroup(groupsData[0]);
-        }
-    }, [groupsData]);
+            const firstGroup = groupsData[0];
 
-    useEffect(() => {
-        if (groupsData.length > 0) {
-            setGroupId(groupsData[0]['id']);
-            setCurrentGroup(groupsData[0]);
-            getUsersInGroup(groupsData[0]);
+            setGroupId(firstGroup['id']);
+            setCurrentGroup(firstGroup);
+            getUsersInGroup(firstGroup);
+
+            fetch(`http://localhost:5000/group/${firstGroup['id']}`, {
+                method: 'GET'
+            })
+            .then (async (res) => {
+                const data = await res.json();
+
+                setData(data);
+            })
         }
-    }, [groupsData]);
+    }, [groupsData, data]);
 
     // Here we should add the logic for removing one's debt from the server
     const handleDebtResolution = (person: string, reason: string, amount: string) => {
@@ -187,6 +188,11 @@ function Dashboard() {
         //     body: JSON.stringify({ person, reason, amount }) 
         // });
     };
+
+    const convertParticipant = (participant: Person) => {
+        return JSON.stringify(participant);
+    }
+
     const userId = localStorage.getItem('userid');
     if (!noGroups) {
         return (
@@ -199,7 +205,7 @@ function Dashboard() {
                 </h1>
                 <div className="dashboard-upper">
                     <h1 className="currently-managing-text">
-                        Welcome,
+                        Welcome, {JSON.stringify(data)}
                         <span className="red-text"> {username}</span>
                     </h1>
                     <select id="group-select" onChange={handleChangeGroup}>
@@ -256,13 +262,14 @@ function Dashboard() {
                 </div>
             </div> : /*<Navigate to="/create_group" replace />*/ <h1>no</h1>}
             <SplitOverlay
+                groupId={groupId}
                 isOpen={isOverlayOpen}
                 onClose={() => setIsOverlayOpen(false)}
                 onApply={(data) => {
                     console.log("Split data:", data);
                     setIsOverlayOpen(false);
-                    // Here you would handle the split data
                 }}
+                token={token!}
             />
         </div>
     );
