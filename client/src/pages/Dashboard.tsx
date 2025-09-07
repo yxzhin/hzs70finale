@@ -1,5 +1,5 @@
 //React
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 //Components
 import DebtTable from "../components/DebtTable";
 import SplitOverlay from "../components/SplitOverlay";
@@ -9,7 +9,6 @@ import type { HistoryActivity } from "../types/interfaces";
 //Styles
 import "./Dashboard.css";
 /*------------------------------------------------------------------------*/
-import { useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 
 interface GroupProps {
@@ -128,7 +127,6 @@ function Dashboard() {
             getUsersInGroup(group!);
     }
 
-    const groupId = 123;
     // Replace these with actual data fetching logic
     const theyOweList = [
         { person: "John Doe", reason: "Pizza", amount: "$15.00", category: "Food", resolved: false },
@@ -146,9 +144,10 @@ function Dashboard() {
     const [youOwe, setYouOwe] = useState<Person[]>(youOweList);
     const [history, setHistory] = useState<HistoryActivity[]>(historyList);
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
-    let theyOweValue = "$40.00";
-    let youOweValue = "$17.50";
-    let historyValue = "$40.00";
+
+    const youOweValue = youOweList.reduce((total, currentItem) => { const amount = parseFloat(currentItem.amount.replace('$', '')); return total + amount; }, 0);
+    const historyValue = historyList.reduce((total, currentItem) => { const amount = parseFloat(currentItem.amount.replace('$', '')); return total + amount; }, 0)
+    const theyOweValue = theyOweList.reduce((total, currentItem) => { const amount = parseFloat(currentItem.amount.replace('$', '')); return total + amount; }, 0);
 
     const defaultToFirstGroup = () => {
         setGroupId(groupsData[0]['id'])
@@ -161,12 +160,6 @@ function Dashboard() {
         getUsersInGroup(groupsData[0]);
     }
 }, [groupsData]);
-
-    if (!noGroups) {
-        return (
-    const youOweValue = youOweList.reduce((total, currentItem) => { const amount = parseFloat(currentItem.amount.replace('$', '')); return total + amount; }, 0);
-    const historyValue = historyList.reduce((total, currentItem) => { const amount = parseFloat(currentItem.amount.replace('$', '')); return total + amount; }, 0)
-    const theyOweValue = theyOweList.reduce((total, currentItem) => { const amount = parseFloat(currentItem.amount.replace('$', '')); return total + amount; }, 0);
     // Here we should add the logic for removing one's debt from the server
     const handleDebtResolution = (person: string, reason: string, amount: string) => {
         if (theyOwe.some(debt => debt.person === person)) {
@@ -186,7 +179,8 @@ function Dashboard() {
         // });
     };
     const userId = localStorage.getItem('userid');
-    return (
+    if (!noGroups) {
+        return (
         <div className="dashboard">
             {groupId !== -1 ? 
             <div className="dashboard-content">
