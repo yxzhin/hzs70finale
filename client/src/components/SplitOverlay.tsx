@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "./SplitOverlay.css";
 import { categories } from "../constants/categories";
+import Currencies from "./Currencies";
 
 interface Person {
     name: string;
@@ -48,6 +49,7 @@ function SplitOverlay({ isOpen, onClose, onApply }: SplitOverlayProps) {
             percentage: "0",
         },
     ];
+    const [selectedCurrency, setSelectedCurrency] = useState("RSD");
     const [totalPercentage, setTotalPercentage] = useState(0);
     const [activity, setActivity] = useState("");
     const [totalAmount, setTotalAmount] = useState("");
@@ -63,6 +65,7 @@ function SplitOverlay({ isOpen, onClose, onApply }: SplitOverlayProps) {
         setPeople(peopleList);
         setTotalPaid(0);
         setIsValid(false);
+        setSelectedCurrency("RSD");
     };
     const handleParticipantChange = (index: number, checked: boolean) => {
         const newPeople = [...people];
@@ -78,7 +81,7 @@ function SplitOverlay({ isOpen, onClose, onApply }: SplitOverlayProps) {
         onClose();
     };
     const handleApply = () => {
-        onApply(people);
+        onApply([people, selectedCurrency]);
         resetOverlay();
         onClose();
     };
@@ -157,6 +160,10 @@ function SplitOverlay({ isOpen, onClose, onApply }: SplitOverlayProps) {
                             onChange={(e) => setTotalAmount(e.target.value)}
                             className="input"
                             min="0"
+                        />
+                        <Currencies
+                            selectedCurrency={selectedCurrency}
+                            onCurrencyChange={setSelectedCurrency}
                         />
                         <select className="input">
                             {categories.slice(1).map((category) => (
@@ -323,8 +330,8 @@ function SplitOverlay({ isOpen, onClose, onApply }: SplitOverlayProps) {
                             ))}
                         <tr className="total-row">
                             <td>Total</td>
-                            <td>${totalPaid.toFixed(2)}</td>
-                            <td>${totalAmount || "0"}</td>
+                            <td>{totalPaid.toFixed(2)}{selectedCurrency}</td>
+                            <td>{totalAmount || "0"}{selectedCurrency}</td>
                             {percentage && <td>{totalPercentage}%</td>}
                         </tr>
                     </tbody>

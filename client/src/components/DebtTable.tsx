@@ -15,7 +15,7 @@ interface DebtTableProps {
 
 const DebtTable = ({ title, value, debts, status, onResolve }: DebtTableProps) => {
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const filteredDebts = debts.filter(debt => 
+  const filteredDebts = debts.filter(debt =>
     selectedCategory === "All" || debt.category === selectedCategory
   );
   return (
@@ -25,12 +25,12 @@ const DebtTable = ({ title, value, debts, status, onResolve }: DebtTableProps) =
           {title} ${value}
         </h2>
         <select
-        value={selectedCategory}
-        onChange={(e) => setSelectedCategory(e.target.value)}>
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}>
           {categories.map((category) => (
-            <option 
-            key={category} 
-            value={category}
+            <option
+              key={category}
+              value={category}
             >
               {category}
             </option>
@@ -40,22 +40,22 @@ const DebtTable = ({ title, value, debts, status, onResolve }: DebtTableProps) =
       <div className="debt-list">
         {filteredDebts.map((debt) => (
           <DebtItem
-            {...(status === "history" 
+            {...(status === "history"
               ? {
-                  reason: debt.reason,
-                  amount: debt.amount,
-                  status: status,
-                  category: debt.category
-                }
+                reason: debt.reason,
+                amount: debt.amount,
+                status: status,
+                category: debt.category
+              }
               : {
-                  person: (debt as Person).person,
-                  reason: debt.reason,
-                  amount: debt.amount,
-                  status: status,
-                  category: debt.category,
-                  resolved: (debt as Person).resolved,
-                  onResolve: onResolve
-                }
+                person: (debt as Person).person,
+                reason: debt.reason,
+                amount: debt.amount,
+                status: status,
+                category: debt.category,
+                resolved: (debt as Person).resolved,
+                onResolve: onResolve
+              }
             )}
           />
         ))}
