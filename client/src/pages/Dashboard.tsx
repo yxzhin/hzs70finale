@@ -53,7 +53,10 @@ function Dashboard() {
                 navigate('/', { replace: true });
             } else if (res.status == 200) {
                 const result = await res.json();
+                console.log("Setting username");
+                console.log(result['username']);
                 setUsername(result['username']);
+                console.log(username);
             } else {
                 throw new Error(`Unexpected status: ${res.status}`);
             }
@@ -105,8 +108,11 @@ function Dashboard() {
             }
 
             const data = await res.json();
+            console.log(`getUsersInGroup response message for group ${group.id}:`, data.message); // Логируем message
             setGroupUsers(data.users);
-        })
+        }).catch(err => {
+            console.error(`Error fetching users in group ${group.id}:`, err);
+        });
     }
 
     const handleChangeGroup = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -159,16 +165,19 @@ function Dashboard() {
             setCurrentGroup(firstGroup);
             getUsersInGroup(firstGroup);
 
-            fetch(`http://localhost:5000/group/${firstGroup['id']}`, {
+            fetch(`http://localhost:5000/groups/${firstGroup['id']}`, {
                 method: 'GET'
             })
             .then (async (res) => {
                 const data = await res.json();
-
+                console.log(`Fetch first group data message for group ${firstGroup.id}:`, data.message); // Логируем message
                 setData(data);
-            })
+            }).catch(err => {
+                console.error(`Error fetching first group data for group ${firstGroup.id}:`, err);
+            });
         }
-    }, [groupsData, data]);
+    }, [groupsData]);
+
 
     // Here we should add the logic for removing one's debt from the server
     const handleDebtResolution = (person: string, reason: string, amount: string) => {
@@ -205,7 +214,7 @@ function Dashboard() {
                 </h1>
                 <div className="dashboard-upper">
                     <h1 className="currently-managing-text">
-                        Welcome, {JSON.stringify(data)}
+                        Welcome,
                         <span className="red-text"> {username}</span>
                     </h1>
                     <select id="group-select" onChange={handleChangeGroup}>
