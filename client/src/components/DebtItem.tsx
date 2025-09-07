@@ -3,8 +3,8 @@ import "./DebtItem.css";
 
 interface DebtItemProps {
     person?: string;
-    reason: string;
-    amount: string;
+    reason: string;  // название расхода или причина долга
+    amount: string;  // сумма с валютой, например "1000 EUR"
     category: string | { name: string };
     status?: "youOwe" | "history" | "theyOwe";
     resolved?: boolean;
@@ -20,10 +20,12 @@ const DebtItem = (props: DebtItemProps) => {
         }
     };
 
-    const displayCategory = typeof category === 'object' && category !== null
+    // Отобразить категорию, вне зависимости от типа (string или объект)
+    const displayCategory = typeof category === "object" && category !== null
         ? category.name
         : category;
 
+    // Отдельный рендер для истории
     if (status === "history") {
         return (
             <div className="debt-item">
@@ -38,6 +40,7 @@ const DebtItem = (props: DebtItemProps) => {
         );
     }
 
+    // Для "You owe them"
     if (status === "youOwe") {
         return (
             <div className="debt-item">
@@ -59,6 +62,7 @@ const DebtItem = (props: DebtItemProps) => {
         );
     }
 
+    // Для "They owe you"
     return (
         <div className="debt-item">
             <div className="debt-info">

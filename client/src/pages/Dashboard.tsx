@@ -247,8 +247,17 @@ function Dashboard() {
     useEffect(() => {
         if (groupId !== -1 && userId) {
             fetchExpenseHistory(userId, groupId).then(expenses => {
-                console.log("Fetched expense history:", expenses); // ← вот это добавлено
-                setHistory(expenses);
+                console.log("Fetched expense history:", expenses);
+
+                const formattedHistory = expenses.map(expense => ({
+                    id: expense.id,
+                    reason: expense.title,
+                    amount: expense.amount + ' ' + expense.currency,
+                    category: expense.category ? expense.category.name : "Other",
+                    status: "history",
+                }));
+
+                setHistory(formattedHistory);
             });
         }
     }, [groupId, userId]);
