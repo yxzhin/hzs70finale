@@ -8,6 +8,8 @@ from server.app.utils import jwt_tokens
 debts_bp = Blueprint(
     "debts_api",
     __name__,
+    url_prefix="/debts"
+
 )
 
 api = Api(debts_bp)
@@ -56,4 +58,4 @@ class DebtsResource(Resource):
             db_sess.close()
 
 
-api.add_resource(DebtsResource, "/debts")
+api.add_resource(DebtsResource, "/")
