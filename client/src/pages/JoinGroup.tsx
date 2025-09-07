@@ -99,6 +99,8 @@ function JoinGroup() {
             if (res.status !== 200) {
                 console.error(`Invalid status code: ${res.status}`);
             }
+
+            navigate('/', { replace: true });
         })
     }
 

@@ -6,7 +6,10 @@ from flask_login import LoginManager
 def create_app():
     app = Flask(__name__)
     app.config.from_object("server.app.conf.Config")
-    CORS(app)
+
+    CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}},
+         supports_credentials=True,
+         allow_headers=["Content-Type", "Authorization"])
 
     login_manager = LoginManager()
     login_manager.init_app(app)
