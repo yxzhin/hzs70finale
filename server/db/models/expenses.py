@@ -36,7 +36,7 @@ class Expense(SqlAlchemyBase):
             "split_type": self.split_type,
             "payment_method": self.payment_method,
             "periodicity": self.periodicity,
-            "next_payment_date": self.next_payment_date,
-            "creation_date": self.creation_date,
+            "next_payment_date": self.next_payment_date.isoformat(),
+            "creation_date": self.creation_date.isoformat(),
             "is_paid": self.is_paid,
         }
