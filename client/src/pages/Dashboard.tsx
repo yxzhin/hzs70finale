@@ -125,7 +125,19 @@ function Dashboard() {
     let youOweValue = "$17.50";
     let historyValue = "$40.00";
 
-    if (!noGroups)
+    const defaultToFirstGroup = () => {
+        setGroupId(groupsData[0]['id'])
+    }
+
+    useEffect(() => {
+    if (groupsData.length > 0) {
+        setGroupId(groupsData[0]['id']);
+        setCurrentGroup(groupsData[0]);
+        getUsersInGroup(groupsData[0]);
+    }
+}, [groupsData]);
+
+    if (!noGroups) {
         return (
         <div className="dashboard">
             {groupId !== -1 ? 
@@ -247,6 +259,7 @@ function Dashboard() {
             />
         </div>
     );
+}
 
     return <h1>You have no groups!</h1>
 }
