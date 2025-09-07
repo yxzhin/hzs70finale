@@ -9,7 +9,7 @@ class Expense(SqlAlchemyBase):
 
     id = Column(Integer, primary_key=True)
     group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)
-    category_id = Column(Integer, ForeignKey("expense_categories.id"), nullable=False)
+    category_id = Column(Integer, ForeignKey("expense_categories.id"), nullable=True)
     title = Column(String(100), nullable=False)
     amount = Column(Integer, nullable=False)
     currency = Column(String(3), nullable=False)
