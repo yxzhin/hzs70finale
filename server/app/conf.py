@@ -6,3 +6,5 @@ class Config:
     DBNAME = r"db/hzs70finale.sqlite"
     HOST = "localhost"
     PORT = 5000
+
+    CRON_RUN_COOLDOWN = 1  # //in minutes

@@ -58,7 +58,22 @@ def test_data():
         next_payment_date=datetime.now(timezone.utc) + timedelta(days=30),
         is_paid=False,
     )
-    db_session.add(expense1)
+
+    expense2 = Expense(
+        group_id=group1.id,
+        category_id=category1.id,
+        title="Electricity",
+        amount=2000,
+        currency="RSD",
+        expense_type="one-time",
+        split_type="percent",
+        payment_method="prepaid",
+        periodicity=1,
+        next_payment_date=datetime.now(timezone.utc) - timedelta(days=30),
+        is_paid=False,
+    )
+
+    db_session.add_all([expense1, expense2])
     db_session.flush()
 
     # === PARTICIPANTS ===
