@@ -52,3 +52,16 @@ header {
         display: none;
     }
 }
+
+.rside-header {
+    display: flex;
+    align-items: center;
+    gap:5px;
+}
+
+select{
+    background: var(--primary);
+    color: var(--white);
+    font-size: var(--font-size);
+    border-radius: 5px;
+}

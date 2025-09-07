@@ -12,6 +12,7 @@ import Dashboard from './pages/Dashboard';
 import SignUpPage from './pages/SignUp';
 import Information from './pages/Information';
 import Invite from './pages/Invite';
+import JoinGroup from './pages/JoinGroup';
 
 // Logic
 import SignUpRequest from './logic/SignUpRequests';
@@ -22,9 +23,8 @@ function App() {
     
     return (
         <div className="app">
-            <Header />
-
             <BrowserRouter>
+            <Header />
                 <Routes>
                     <Route path="/" element={<Hero />} />
                     <Route path="/Dashboard" element={<Dashboard />} />
@@ -32,6 +32,7 @@ function App() {
                     <Route path="/signup" element={<SignUpPage />} />
                     <Route path="/info" element={<Information />} />
                     <Route path="/invite" element={<Invite />} />
+                    <Route path="/join" element={<JoinGroup />} />
                     <Route path="/sign_up_submit" element={<SignUpRequest />} />
                     <Route path="/log_in_submit" element={<LogInRequest />} />
                     <Route path="/logout" element={<Logout />} />
