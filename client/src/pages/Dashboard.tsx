@@ -106,7 +106,7 @@ function Dashboard() {
         const value = event.target.value;
 
         if (value === 'create') {
-            console.log('Create');
+            navigate('/create_group', { replace: true });
             return;
         }
 

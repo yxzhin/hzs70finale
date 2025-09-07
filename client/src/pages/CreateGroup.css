@@ -1,0 +1,29 @@
+.create-group {
+    display: flex;
+    justify-content: center;
+}
+
+.create-group form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.create-group form input {
+    background-color: var(--darker);
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    color: var(--white);
+}
+
+.create-group form button {
+    background-color: var(--primary);
+    color: var(--white);
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 20px;
+    cursor: pointer;
+}
