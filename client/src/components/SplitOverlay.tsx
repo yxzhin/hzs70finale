@@ -3,6 +3,7 @@ import "./SplitOverlay.css";
 import { categories } from "../constants/categories";
 
 interface Person {
+    user_id: number;
     name: string;
     isParticipating: boolean;
     paid: string;
@@ -11,77 +12,138 @@ interface Person {
 }
 
 interface SplitOverlayProps {
+    groupId: number;
     isOpen: boolean;
     onClose: () => void;
     onApply: (data: any) => void;
+    token: string;
 }
 
-function SplitOverlay({ isOpen, onClose, onApply }: SplitOverlayProps) {
-    // Sample people list, in a real app this would come from props or context
-    const peopleList = [
-        {
-            name: "John Doe",
-            isParticipating: false,
-            paid: "0",
-            shouldPay: "0",
-            percentage: "0",
-        },
-        {
-            name: "Alice Smith",
-            isParticipating: false,
-            paid: "0",
-            shouldPay: "0",
-            percentage: "0",
-        },
-        {
-            name: "Bob Johnson",
-            isParticipating: false,
-            paid: "0",
-            shouldPay: "0",
-            percentage: "0",
-        },
-        {
-            name: "Sarah Wilson",
-            isParticipating: false,
-            paid: "0",
-            shouldPay: "0",
-            percentage: "0",
-        },
-    ];
+function SplitOverlay({ groupId, isOpen, onClose, onApply, token }: SplitOverlayProps) {
+    const [users, setUsers] = useState([]);
+
     const [totalPercentage, setTotalPercentage] = useState(0);
     const [activity, setActivity] = useState("");
     const [totalAmount, setTotalAmount] = useState("");
     const [divideEqually, setDivideEqually] = useState(true);
     const [percentage, setPercentage] = useState(false);
-    const [people, setPeople] = useState<Person[]>(peopleList);
+    const [people, setPeople] = useState<Person[]>([]);
     const [totalPaid, setTotalPaid] = useState(0);
     const [isValid, setIsValid] = useState(false);
+
+    // Added category state
+    const [category, setCategory] = useState(categories[1] || "");
+
+    useEffect(() => {
+        fetch(`http://localhost:5000/groups/${groupId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(async (res) => {
+            const data = await res.json();
+            console.log(`Fetch users for group ${groupId}:`, data.message || data);
+            setUsers(data.users);
+        })
+        .catch(err => {
+            console.error(`Error fetching users for group ${groupId}:`, err);
+        });
+    }, [groupId]);
+
     const resetOverlay = () => {
         setActivity("");
         setTotalAmount("");
         setDivideEqually(true);
-        setPeople(peopleList);
+        setPercentage(false);
+        setCategory(categories[1] || "");
+
+        const resetPeople: Person[] = users.map((user) => ({
+            user_id: user.id,
+            name: user.username,
+            isParticipating: false,
+            paid: "0",
+            shouldPay: "0",
+            percentage: "0"
+        }));
+
+        setPeople(resetPeople);
         setTotalPaid(0);
         setIsValid(false);
+        setTotalPercentage(0);
     };
+
     const handleParticipantChange = (index: number, checked: boolean) => {
         const newPeople = [...people];
         newPeople[index].isParticipating = checked;
         if (!checked) {
             newPeople[index].paid = "0";
             newPeople[index].shouldPay = "0";
+            newPeople[index].percentage = "0";
         }
         setPeople(newPeople);
     };
+
     const handleClose = () => {
-        resetOverlay();
         onClose();
     };
+
+    function getSplitType(divideEqually: boolean, percentages: boolean) {
+        if (divideEqually) return "divideEqually";
+        if (percentages) return "percentages";
+        return "individual";
+    }
+
     const handleApply = () => {
+        const participants = people
+            .filter((p) => p.isParticipating)
+            .map((p) => {
+                return {
+                    user_id: p.user_id,
+                    amount: parseFloat(p.shouldPay),
+                    percentage: percentage ? parseFloat(p.percentage || "0") : null,
+                };
+            });
+
         onApply(people);
-        resetOverlay();
+
+        fetch(`http://localhost:5000/expense/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                group_id: groupId,
+                title: activity,
+                amount: Number(totalAmount),
+                currency: 'EUR',
+                split_type: getSplitType(divideEqually, percentage),
+                payment_method: '',
+                is_paid: false,
+                participants,
+                next_payment_date: null,
+                expense_type: '',
+                category_name: category
+            })
+        })
+        .then(async (res) => {
+            const data = await res.json();
+            console.log("Expense creation response:", data.message || data);
+        })
+        .catch((err) => {
+            console.error("Error creating expense:", err);
+        });
+
         onClose();
     };
+
+    useEffect(() => {
+        if (isOpen && users.length > 0) {
+            resetOverlay();
+        }
+    }, [users, isOpen]);
+
     useEffect(() => {
         if (divideEqually && totalAmount) {
             const participants = people.filter((p) => p.isParticipating).length;
@@ -130,9 +192,12 @@ function SplitOverlay({ isOpen, onClose, onApply }: SplitOverlayProps) {
         setTotalPaid(total);
         // Add activity check to validation
         setIsValid(
-            total === parseFloat(totalAmount || "0") && total > 0 && activity.trim() !== "" && (totalPercentage <= 100 || !percentage)
+            total === parseFloat(totalAmount || "0") &&
+            total > 0 &&
+            activity.trim() !== "" &&
+            (totalPercentage <= 100 || !percentage)
         );
-    }, [people, totalAmount, activity]); // Add activity to dependencies
+    }, [people, totalAmount, activity, totalPercentage, percentage]);
 
     if (!isOpen) return null;
 
@@ -158,13 +223,14 @@ function SplitOverlay({ isOpen, onClose, onApply }: SplitOverlayProps) {
                             className="input"
                             min="0"
                         />
-                        <select className="input">
-                            {categories.slice(1).map((category) => (
-                                <option
-                                    key={category}
-                                    value={category}
-                                >
-                                    {category}
+                        <select
+                            className="input"
+                            value={category}
+                            onChange={(e) => setCategory(e.target.value)}
+                        >
+                            {categories.slice(1).map((cat) => (
+                                <option key={cat} value={cat}>
+                                    {cat}
                                 </option>
                             ))}
                         </select>

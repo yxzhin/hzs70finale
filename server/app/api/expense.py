@@ -9,6 +9,7 @@ from server.db.models.__all_models import (
     UserGroup,
     Expense,
     ExpenseParticipant,
+    ExpenseCategory,
     Payment,
     Debt,
 )
@@ -57,6 +58,7 @@ class ExpenseCreationResource(Resource):
                 "next_payment_date",
                 "is_paid",
                 "participants",
+                "category_name"
             ]
             for field in required_fields:
                 if field not in data:
@@ -90,6 +92,10 @@ class ExpenseCreationResource(Resource):
                     }, 400
 
             # 2. Creating a Expence
+
+            category_name = data["category_name"]
+            category = db_sess.query(ExpenseCategory).filter(ExpenseCategory.name == category_name).first()
+
             expense = Expense(
                 group_id=data["group_id"],
                 title=data["title"],
@@ -101,8 +107,9 @@ class ExpenseCreationResource(Resource):
                 periodicity=data.get("periodicity"),
                 next_payment_date=datetime.fromisoformat(data["next_payment_date"])
                 if data["next_payment_date"]
-                else None,  # 🔥 Исправлено здесь
+                else None,
                 is_paid=data["is_paid"],
+                category_id=category.id
             )
 
             db_sess.add(expense)
@@ -235,7 +242,7 @@ class ExpenseHistoryResource(Resource):
             expenses = (
                 query.offset((page - 1) * items_per_page).limit(items_per_page).all()
             )
-            items = [item.to_dict() for item in expenses]
+            items = [item.to_dict(category_req=True) for item in expenses]
 
             return {
                 "page": page,
@@ -246,6 +253,7 @@ class ExpenseHistoryResource(Resource):
             }, 200
 
         except Exception as e:
+            print("ERRPR", e)
             return {"message": f"An error occurred: {str(e)}"}, 500
         finally:
             db_sess.close()

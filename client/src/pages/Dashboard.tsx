@@ -9,7 +9,7 @@ import type { HistoryActivity } from "../types/interfaces";
 //Styles
 import "./Dashboard.css";
 /*------------------------------------------------------------------------*/
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useFetcher, useNavigate } from "react-router-dom";
 
 interface GroupProps {
     id: number;
@@ -53,7 +53,10 @@ function Dashboard() {
                 navigate('/', { replace: true });
             } else if (res.status == 200) {
                 const result = await res.json();
+                console.log("Setting username");
+                console.log(result['username']);
                 setUsername(result['username']);
+                console.log(username);
             } else {
                 throw new Error(`Unexpected status: ${res.status}`);
             }
@@ -105,8 +108,11 @@ function Dashboard() {
             }
 
             const data = await res.json();
+            console.log(`getUsersInGroup response message for group ${group.id}:`, data.message); // Логируем message
             setGroupUsers(data.users);
-        })
+        }).catch(err => {
+            console.error(`Error fetching users in group ${group.id}:`, err);
+        });
     }
 
     const handleChangeGroup = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -127,47 +133,80 @@ function Dashboard() {
             getUsersInGroup(group!);
     }
 
-    // Replace these with actual data fetching logic
-    const theyOweList = [
-        { person: "John Doe", reason: "Pizza", amount: "$15.00", category: "Food", resolved: false },
-        { person: "Alice Smith", reason: "Movie tickets", amount: "$25.00", category: "Entertainment", resolved: false  },
+    const theyOweList: [] = [
+
     ];
-    const youOweList = [
-        { person: "Bob Johnson", reason: "Lunch", amount: "$12.50", category: "Food", resolved: false  },
-        { person: "Sarah Wilson", reason: "Coffee", amount: "$5.00", category: "Food", resolved: false  },
+    const youOweList: [] = [
+
     ];
-    const historyList = [
-        { reason: "Pizza", amount: "$15.00", category: "Food" },
-        { reason: "Movie tickets", amount: "$25.00", category: "Entertainment" },
+    const historyList: [] = [
+
     ];
     const [theyOwe, setTheyOwe] = useState<Person[]>(theyOweList);
     const [youOwe, setYouOwe] = useState<Person[]>(youOweList);
     const [history, setHistory] = useState<HistoryActivity[]>(historyList);
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
 
+    const [data, setData] = useState([]);
+
     const youOweValue = youOweList.reduce((total, currentItem) => { const amount = parseFloat(currentItem.amount.replace('$', '')); return total + amount; }, 0);
     const historyValue = historyList.reduce((total, currentItem) => { const amount = parseFloat(currentItem.amount.replace('$', '')); return total + amount; }, 0)
     const theyOweValue = theyOweList.reduce((total, currentItem) => { const amount = parseFloat(currentItem.amount.replace('$', '')); return total + amount; }, 0);
 
     const defaultToFirstGroup = () => {
-        setGroupId(groupsData[0]['id'])
+        setGroupId(groupsData[0]['id']) 
     }
 
-    useEffect(() => {
-        if (groupsData.length > 0) {
-            setGroupId(groupsData[0]['id']);
-            setCurrentGroup(groupsData[0]);
-            getUsersInGroup(groupsData[0]);
+    const fetchExpenseHistory = async (userId: string, groupId: number, page = 1, itemsPerPage = 10) => {
+        try {
+            const res = await fetch(`http://localhost:5000/expense/history`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    group_id: groupId,
+                    items_per_page: itemsPerPage,
+                    page: page,
+                    // filter_is_paid можно добавить при необходимости
+                })
+            });
+
+            if (res.status !== 200) {
+                console.error('Failed to fetch expense history:', res.status);
+                return [];
+            }
+
+            const data = await res.json();
+            return data.expenses || [];
+        } catch (error) {
+            console.error('Error fetching expense history:', error);
+            return [];
         }
-    }, [groupsData]);
+    };
 
     useEffect(() => {
         if (groupsData.length > 0) {
-            setGroupId(groupsData[0]['id']);
-            setCurrentGroup(groupsData[0]);
-            getUsersInGroup(groupsData[0]);
+            const firstGroup = groupsData[0];
+
+            setGroupId(firstGroup['id']);
+            setCurrentGroup(firstGroup);
+            getUsersInGroup(firstGroup);
+
+            fetch(`http://localhost:5000/groups/${firstGroup['id']}`, {
+                method: 'GET'
+            })
+            .then (async (res) => {
+                const data = await res.json();
+                console.log(`Fetch first group data message for group ${firstGroup.id}:`, data.message); // Логируем message
+                setData(data);
+            }).catch(err => {
+                console.error(`Error fetching first group data for group ${firstGroup.id}:`, err);
+            });
         }
     }, [groupsData]);
+
 
     // Here we should add the logic for removing one's debt from the server
     const handleDebtResolution = (person: string, reason: string, amount: string) => {
@@ -187,7 +226,42 @@ function Dashboard() {
         //     body: JSON.stringify({ person, reason, amount }) 
         // });
     };
+
+    const convertParticipant = (participant: Person) => {
+        return JSON.stringify(participant);
+    }
+
+    const handleLeave = () => {
+        fetch(`http://localhost:5000/user_groups/${groupId}`, {
+            method: "DELETE",
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }).then(() => {
+            navigate('/');
+        })
+    }
+
     const userId = localStorage.getItem('userid');
+
+    useEffect(() => {
+        if (groupId !== -1 && userId) {
+            fetchExpenseHistory(userId, groupId).then(expenses => {
+                console.log("Fetched expense history:", expenses);
+
+                const formattedHistory = expenses.map(expense => ({
+                    id: expense.id,
+                    reason: expense.title,
+                    amount: expense.amount + ' ' + expense.currency,
+                    category: expense.category ? expense.category.name : "Other",
+                    status: "history",
+                }));
+
+                setHistory(formattedHistory);
+            });
+        }
+    }, [groupId, userId]);
+
     if (!noGroups) {
         return (
         <div className="dashboard">
@@ -224,7 +298,7 @@ function Dashboard() {
                         </div>
                     </div>
                     <div className="dashboard-header-right">
-                        <button className="primary-btn">Leave</button>
+                        <button className="primary-btn" onClick={handleLeave}>Leave</button>
                         <a href={`/invite?id=${groupId}`}>
                             <button className="primary-btn">Add Friend</button>
                         </a>
@@ -256,13 +330,14 @@ function Dashboard() {
                 </div>
             </div> : /*<Navigate to="/create_group" replace />*/ <h1>no</h1>}
             <SplitOverlay
+                groupId={groupId}
                 isOpen={isOverlayOpen}
                 onClose={() => setIsOverlayOpen(false)}
                 onApply={(data) => {
                     console.log("Split data:", data);
                     setIsOverlayOpen(false);
-                    // Here you would handle the split data
                 }}
+                token={token!}
             />
         </div>
     );
