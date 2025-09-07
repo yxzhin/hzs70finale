@@ -1,4 +1,13 @@
-from server.db.models import users, groups, user_groups,expenses, expense_participant, payments, debts
+from server.db.models import (
+    users,
+    groups,
+    user_groups,
+    expenses,
+    expense_participant,
+    payments,
+    debts,
+    expense_categories,
+)
 
 User = users.User
 Group = groups.Group
@@ -8,3 +17,4 @@ Expense = expenses.Expense
 ExpenseParticipant = expense_participant.ExpenseParticipant
 Payment = payments.Payment
 Debt = debts.Debt
+ExpenseCategory = expense_categories.ExpenseCategory

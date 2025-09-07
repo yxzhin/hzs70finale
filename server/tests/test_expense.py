@@ -42,11 +42,13 @@ def test_create_expense_success(test_client, get_auth_token, db_session):
         headers={"Authorization": f"Bearer {token}"},
         content_type="application/json"
     )
-
-    assert response.status_code == 201
+    # 💡 Добавлено: Вывод сообщения при ошибке
+    assert response.status_code == 201, f"Expected status code 201, but got {response.status_code}. Response: {response.get_data(as_text=True)}"
     data = response.get_json()
     assert "expense_id" in data
     assert data["message"] == "Expense added successfully"
+
+
 
 
 def test_create_expense_missing_field(test_client, get_auth_token, db_session):
@@ -78,9 +80,11 @@ def test_create_expense_missing_field(test_client, get_auth_token, db_session):
         headers={"Authorization": f"Bearer {token}"},
         content_type="application/json"
     )
-
-    assert response.status_code == 400
+    # 💡 Добавлено: Вывод сообщения при ошибке
+    assert response.status_code == 400, f"Expected status code 400, but got {response.status_code}. Response: {response.get_data(as_text=True)}"
     assert "amount is required" in response.get_json()["message"]
+
+
 
 
 def test_get_expense_by_id(test_client, get_auth_token, db_session):
@@ -121,10 +125,13 @@ def test_get_expense_by_id(test_client, get_auth_token, db_session):
 
     # Получаем его
     response = test_client.get(f"/expense/{expense_id}")
-    assert response.status_code == 200
+    # 💡 Добавлено: Вывод сообщения при ошибке
+    assert response.status_code == 200, f"Expected status code 200, but got {response.status_code}. Response: {response.get_data(as_text=True)}"
     data = response.get_json()
     assert data["title"] == "Pizza"
     assert data["amount"] == 50.0
+
+
 
 
 def test_get_nonexistent_expense(test_client):
@@ -132,8 +139,11 @@ def test_get_nonexistent_expense(test_client):
     Тест получения несуществующего расхода.
     """
     response = test_client.get("/expense/99999")
-    assert response.status_code == 404
+    # 💡 Добавлено: Вывод сообщения при ошибке
+    assert response.status_code == 404, f"Expected status code 404, but got {response.status_code}. Response: {response.get_data(as_text=True)}"
     assert response.get_json()["message"] == "Expense not found"
+
+
 
 
 def test_get_all_expenses_of_group(test_client, get_auth_token, db_session):
@@ -172,11 +182,14 @@ def test_get_all_expenses_of_group(test_client, get_auth_token, db_session):
 
     # Получаем список всех расходов группы
     response = test_client.get(f"/expense/group/{group_id}")
-    assert response.status_code == 200
+    # 💡 Добавлено: Вывод сообщения при ошибке
+    assert response.status_code == 200, f"Expected status code 200, but got {response.status_code}. Response: {response.get_data(as_text=True)}"
     data = response.get_json()
     assert isinstance(data, list)
     assert len(data) == 1
     assert data[0]["title"] == "Groceries"
+
+
 
 
 def test_get_group_expenses_empty(test_client, get_auth_token, db_session):
@@ -187,8 +200,11 @@ def test_get_group_expenses_empty(test_client, get_auth_token, db_session):
     group_id = create_group_and_get_id(db_session, user_id)
 
     response = test_client.get(f"/expense/group/{group_id}")
-    assert response.status_code == 404
+    # 💡 Добавлено: Вывод сообщения при ошибке
+    assert response.status_code == 404, f"Expected status code 404, but got {response.status_code}. Response: {response.get_data(as_text=True)}"
     assert response.get_json()["message"] == "No expenses found"
+
+
 
 
 def test_expense_history_pagination(test_client, get_auth_token, db_session):
@@ -238,7 +254,8 @@ def test_expense_history_pagination(test_client, get_auth_token, db_session):
         content_type="application/json"
     )
 
-    assert response.status_code == 200
+    # 💡 Добавлено: Вывод сообщения при ошибке
+    assert response.status_code == 200, f"Expected status code 200, but got {response.status_code}. Response: {response.get_data(as_text=True)}"
     data = response.get_json()
     assert data["page"] == 1
     assert data["items_per_page"] == 2

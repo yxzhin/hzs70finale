@@ -37,6 +37,8 @@ class ExpenseResource(Resource):
         finally:
             db_sess.close()
 
+
+class ExpenseCreationResource(Resource):
     @jwt_tokens.token_required
     def post(self, user_id):
         db_sess = create_session()
@@ -84,7 +86,7 @@ class ExpenseResource(Resource):
                 split_type=data["split_type"],
                 payment_method=data["payment_method"],
                 periodicity=data.get("periodicity"),
-                next_payment_date=datetime.fromisoformat(data["next_payment_date"]), # 🔥 Исправлено здесь
+                next_payment_date=datetime.fromisoformat(data["next_payment_date"]),  # 🔥 Исправлено здесь
                 is_paid=data["is_paid"],
             )
 
@@ -230,6 +232,7 @@ class ExpenseHistoryResource(Resource):
             db_sess.close()
 
 
-api.add_resource(ExpenseResource, "/<int:expense_id>", "/")
+api.add_resource(ExpenseResource, "/<int:expense_id>")
+api.add_resource(ExpenseCreationResource, "/")
 api.add_resource(AllExpensesOfGroupResource, "/group/<int:group_id>")
 api.add_resource(ExpenseHistoryResource, "/history")
