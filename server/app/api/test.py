@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 from server.db.db_session import create_session
 from server.db.models.__all_models import (
     User,
+    ExpenseCategory,
     Group,
     Expense,
     ExpenseParticipant,
@@ -30,14 +31,23 @@ def test_data():
     db_session.flush()
 
     # === GROUP ===
-    group1 = Group(name="Pizza Party", owner_id=1)
+    group1 = Group(name="Pizza Party", owner_id=2)
     group1.users.extend([user1, user2, user3, user4])
     db_session.add(group1)
+    db_session.flush()
+
+    # === CATEGORY ===
+    category1 = ExpenseCategory(
+        name="yabloki",
+        owner_id=user2.id,
+    )
+    db_session.add(category1)
     db_session.flush()
 
     # === EXPENSE (Pizza 1000 EUR) ===
     expense1 = Expense(
         group_id=group1.id,
+        category_id=category1.id,
         title="Pizza",
         amount=1000,
         currency="EUR",
@@ -81,9 +91,28 @@ def test_data():
         amount=250,
         is_paid=False,
     )
-    db_session.add(debt1)
+    debt2 = Debt(
+        expense_id=expense1.id,
+        debtor_id=user1.id,
+        creditor_id=user2.id,
+        amount=500,
+        is_paid=False,
+    )
+    debt3 = Debt(
+        expense_id=expense1.id,
+        debtor_id=user3.id,
+        creditor_id=user2.id,
+        amount=730,
+        is_paid=True,
+    )
+    db_session.add_all([debt1, debt2, debt3])
 
     # Сохраняем изменения
     db_session.commit()
 
-    return jsonify({"status": "ok", "message": "Test data seeded"}), 201
+    return jsonify(
+        {
+            "status": "ok",
+            "message": "Test data seeded!!!11!!!!!!!!!1!1!!!!!!!!!!11!!!!!!!!!!!!!!!!!1!!!1!!!!!!!!!!!!!!!!",
+        }
+    ), 201

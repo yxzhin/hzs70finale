@@ -9,6 +9,7 @@ class Expense(SqlAlchemyBase):
 
     id = Column(Integer, primary_key=True)
     group_id = Column(Integer, ForeignKey("groups.id"), nullable=False)
+    category_id = Column(Integer, ForeignKey("expense_categories.id"), nullable=False)
     title = Column(String(100), nullable=False)
     amount = Column(Integer, nullable=False)
     currency = Column(String(3), nullable=False)
@@ -21,6 +22,7 @@ class Expense(SqlAlchemyBase):
     is_paid = Column(Boolean, nullable=False)
 
     group = relationship("Group")
+    category = relationship("ExpenseCategory")
     expense_participants = relationship("ExpenseParticipant", back_populates="expense")
     payments = relationship("Payment", back_populates="expense")
     debts = relationship("Debt", back_populates="expense")
@@ -29,6 +31,7 @@ class Expense(SqlAlchemyBase):
         return {
             "id": self.id,
             "group_id": self.group_id,
+            "category_id": self.category_id,
             "title": self.title,
             "amount": self.amount,
             "currency": self.currency,
